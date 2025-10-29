@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Parlamentsrechner – Majoritäts-Proporz</title>
+  <style>
+    :root {
+      --primary: #1a73e8;
+      --danger: #d93025;
+      --bg: #f8f9fa;
+      --card: #ffffff;
+      --border: #dee2e6;
+      --text: #212529;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 20px;
+      line-height: 1.6;
+    }
+
+    .container { max-width: 1200px; margin: 0 auto; }
+
+    h1 { text-align: center; margin-bottom: 20px; color: var(--primary); }
+
+    .settings {
+      display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;
+      background: var(--card); padding: 15px; border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 20px;
+    }
+    .setting { display: flex; align-items: center; gap: 8px; }
+    label { font-weight: 600; }
+    input[type="number"], input[type="text"] { width: 90px; padding: 8px; border: 1px solid var(--border); border-radius: 6px; }
+
+    .card {
+      background: var(--card); border-radius: 12px; padding: 20px;
+      margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      border: 1px solid var(--border);
+    }
+
+    .party-list { margin-bottom: 15px; }
+    .party-row {
+      display: grid; grid-template-columns: 1fr 1fr auto auto auto;
+      gap: 10px; align-items: center; margin-bottom: 10px;
+      padding: 10px; border: 1px solid var(--border); border-radius: 8px;
+      background: #f8f9fa; cursor: move;
+      user-select: none;
+    }
+    .party-row.dragging { opacity: 0.5; background: #e3f2fd; z-index: 1000; }
+    .party-row input, .party-row button {
+      padding: 8px; border: 1px solid var(--border); border-radius: 6px; font-size: 14px;
+    }
+    .party-row input[type="color"] { width: 44px; height: 44px; padding: 2px; cursor: pointer; }
+    button.remove { background: var(--danger); color: white; font-size: 12px; }
+
+    .drag-handle { cursor: move; padding: 0 8px; font-size: 18px; color: #999; }
+
+    .actions { display: flex; gap: 10px; justify-content: center; margin: 20px 0; }
+    .btn {
+      padding: 12px 24px; font-size: 16px; border: none; border-radius: 6px; cursor: pointer;
+    }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-secondary { background: #e9ecef; color: #495057; }
+
+    table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+    th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border); }
+    th { background: #f1f3f5; font-weight: 600; }
+    .seats { text-align: center; font-weight: bold; }
+
+    .parliament-container { text-align: center; margin: 40px 0; }
+    .legend {
+      display: flex; flex-wrap: wrap; gap: 15px; justify-content: center;
+      margin-top: 20px; font-size: 14px;
+    }
+    .legend-item { display: flex; align-items: center; gap: 6px; }
+    .legend-color { width: 16px; height: 16px; border-radius: 50%; }
+
+    .hidden { display: none; }
+    .info { text-align: center; color: #666; font-size: 14px; margin-top: 10px; }
+
+    #parliament-svg { background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+
+    @media (max-width: 768px) {
+      .party-row { grid-template-columns: 1fr 1fr auto; }
+      .party-row > *:nth-child(3), .party-row > *:nth-child(4), .party-row > *:nth-child(5) {
+        grid-column: span 3;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Parlamentsrechner – Majoritäts-Proporz</h1>
+
+    <div class="settings">
+      <div class="setting">
+        <label for="total-seats">Sitze:</label>
+        <input type="number" id="total-seats" value="630" min="1" max="50000" step="1" />
+      </div>
+      <div class="setting">
+        <label for="huerde">Hürde (%):</label>
+        <input type="number" id="huerde" value="5.0" min="0" max="100" step="0.1" />
+      </div>
+      <div class="setting">
+        <label for="diagram-title">Titel:</label>
+        <input type="text" id="diagram-title" placeholder="z.B. Bundestag 2025" />
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Parteien (Reihenfolge per Drag & Drop)</h2>
+      <p class="info">Ziehe die Zeilen, um die Sitzanordnung im Parlament zu ändern.</p>
+      <div id="party-container" class="party-list"></div>
+
+      <div class="actions">
+        <button class="btn btn-secondary" id="add-party">+ Partei hinzufügen</button>
+        <button class="btn btn-primary" id="calculate">Sitze berechnen</button>
+      </div>
+    </div>
+
+    <div id="result-section" class="hidden">
+      <div class="card">
+        <h2>Sitzverteilung</h2>
+        <table id="result-table">
+          <thead>
+            <tr><th>Partei</th><th>Stimmen %</th><th>Sitze</th><th>Anteil</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h2>Parlamentsgrafik (arches.elexn.uk)</h2>
+        <div class="parliament-container">
+          <div id="parliament-svg"></div>
+        </div>
+        <div class="legend" id="legend"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // === Globale Variablen ===
+    const MAX_PARTIES = 10;
+    let TOTAL_SEATS = 630;
+    const colors = ['#d32f2f','#1976d2','#388e3c','#f57c00','#7b1fa2','#c2185b','#0288d1','#689f38','#fbc02d','#512da8'];
+
+    const partyContainer = document.getElementById('party-container');
+    const addPartyBtn = document.getElementById('add-party');
+    const calculateBtn = document.getElementById('calculate');
+    const resultSection = document.getElementById('result-section');
+    const resultTableBody = document.querySelector('#result-table tbody');
+    const parliamentSvg = document.getElementById('parliament-svg');
+    const legendContainer = document.getElementById('legend');
+
+    let partyCount = 0;
+    let draggedRow = null;
+
+    // === Partei hinzufügen ===
+    addPartyBtn.addEventListener('click', () => {
+      if (partyCount >= MAX_PARTIES) {
+        alert('Maximal 10 Parteien erlaubt!');
+        return;
+      }
+      partyCount++;
+      const index = partyCount - 1;
+
+      const row = document.createElement('div');
+      row.className = 'party-row';
+      row.draggable = true;
+      row.innerHTML = `
+        <input type="text" placeholder="Parteiname" class="party-name" />
+        <input type="number" placeholder="Prozent" class="party-percent" min="0" max="100" step="0.1" />
+        <input type="color" value="${colors[index % colors.length]}" class="party-color" />
+        <button type="button" class="remove">X</button>
+        <div class="drag-handle">Drag</div>
+      `;
+
+      // === Drag & Drop – stabil & einfach ===
+      row.addEventListener('dragstart', (e) => {
+        draggedRow = row;
+        row.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+      });
+
+      row.addEventListener('dragend', () => {
+        row.classList.remove('dragging');
+        draggedRow = null;
+      });
+
+      row.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+      });
+
+      row.addEventListener('drop', (e) => {
+        e.preventDefault();
+        if (draggedRow && draggedRow !== row) {
+          const allRows = Array.from(partyContainer.children);
+          const fromIndex = allRows.indexOf(draggedRow);
+          const toIndex = allRows.indexOf(row);
+
+          if (fromIndex < toIndex) {
+            partyContainer.insertBefore(draggedRow, row.nextSibling);
+          } else {
+            partyContainer.insertBefore(draggedRow, row);
+          }
+        }
+      });
+
+      row.querySelector('.remove').addEventListener('click', () => {
+        partyContainer.removeChild(row);
+        partyCount--;
+      });
+
+      partyContainer.appendChild(row);
+    });
+
+    // === Einstellungen ===
+    document.getElementById('total-seats').addEventListener('input', (e) => {
+      TOTAL_SEATS = Math.max(1, parseInt(e.target.value) || 630);
+      e.target.value = TOTAL_SEATS;
+    });
+
+    // === Berechnung ===
+    calculateBtn.addEventListener('click', () => {
+      TOTAL_SEATS = parseInt(document.getElementById('total-seats').value) || 630;
+      const huerde = parseFloat(document.getElementById('huerde').value) || 5.0;
+      const title = document.getElementById('diagram-title').value.trim();
+      const rows = partyContainer.querySelectorAll('.party-row');
+
+      if (rows.length === 0) {
+        alert('Bitte füge mindestens eine Partei hinzu.');
+        return;
+      }
+
+      const inputParties = [];
+      let valid = true;
+
+      rows.forEach(row => {
+        const name = row.querySelector('.party-name').value.trim();
+        const percent = parseFloat(row.querySelector('.party-percent').value);
+        const color = row.querySelector('.party-color').value;
+
+        if (!name || isNaN(percent) || percent < 0) {
+          valid = false;
+          return;
+        }
+        inputParties.push({ name, percent, color });
+      });
+
+      if (!valid) {
+        alert('Bitte alle Felder korrekt ausfüllen.');
+        return;
+      }
+
+      const seats = majoritaetsProporz(inputParties, huerde);
+      const orderedParties = inputParties.map(p => ({
+        name: p.name,
+        color: p.color,
+        seats: seats[p.name] || 0,
+        percent: p.percent
+      })).filter(p => p.seats > 0);
+
+      displayResults(orderedParties, title);
+    });
+
+    // === 1:1 Python-Logik ===
+    function majoritaetsProporz(partiesInput, huerde = 5.0) {
+      const above = partiesInput.filter(p => p.percent >= huerde);
+      if (above.length === 0) return {};
+
+      const half = Math.ceil(TOTAL_SEATS / 2);
+      const remaining = TOTAL_SEATS - half - (TOTAL_SEATS % 2 === 0 ? 1 : 0);
+
+      const strongest = above.reduce((a, b) => a.percent > b.percent ? a : b);
+      const seats = { [strongest.name]: half + (TOTAL_SEATS % 2 === 0 ? 1 : 0) };
+
+      const others = above.filter(p => p.name !== strongest.name);
+      const totalOther = others.reduce((s, p) => s + p.percent, 0);
+
+      others.forEach(p => {
+        const ratio = totalOther > 0 ? p.percent / totalOther : 0;
+        seats[p.name] = Math.floor(ratio * remaining);
+      });
+
+      const sortedOthers = others.sort((a, b) => a.percent - b.percent);
+      let i = 0;
+      while (Object.values(seats).reduce((a, b) => a + b, 0) < TOTAL_SEATS) {
+        const p = sortedOthers[i % sortedOthers.length];
+        seats[p.name]++;
+        i++;
+      }
+
+      return seats;
+    }
+
+    // === Arches-Diagramm-Logik (1:1 aus archDiagram.js) ===
+    const totals = [3,15,33,61,95,138,189,247,313,388,469,559,657,762,876,997,1126,1263,1408,1560,1722,1889,2066,2250,2442,2641,2850,3064,3289,3519,3759,4005,4261,4522,4794,5071,5358,5652,5953,6263,6581,6906,7239,7581,7929,8287,8650,9024,9404,9793,10187,10594,11003,11425,11850,12288,12729,13183,13638,14109,14580,15066,15553,16055,16557,17075,17592,18126,18660,19208,19758,20323,20888,21468,22050,22645,23243,23853,24467,25094,25723,26364,27011,27667,28329,29001,29679,30367,31061];
+
+    function generateArchSVG(partyData, title = "") {
+      if (partyData.length === 0) return "";
+
+      const totalSeats = partyData.reduce((s, p) => s + p.seats, 0);
+      if (totalSeats <= 0) return "";
+
+      const rowCount = totals.findIndex(t => t >= totalSeats) + 1;
+      if (rowCount <= 0) return "";
+
+      const circleRadius = 0.4 / rowCount;
+      const positions = getSpotCentres(totalSeats, rowCount, false);
+
+      let svg = `<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 360 ${title ? 205 : 185}">
+<g>`;
+
+      svg += `<text x="180" y="175" style="font-size:36px;font-weight:bold;text-anchor:middle;font-family:sans-serif;">${totalSeats}</text>`;
+      if (title) {
+        svg += `<text x="180" y="200" style="font-size:20px;font-weight:bold;text-anchor:middle;font-family:sans-serif;">${title}</text>`;
+      }
+
+      let drawn = 0;
+      partyData.forEach((p, idx) => {
+        const name = p.name.replace(/[^a-zA-Z0-9_-]+/g, "-");
+        svg += `<g style="fill:${p.color}; stroke:${p.color}; stroke-width:0;" id="${name}_${idx}"><title>${p.name}</title>`;
+        for (let i = drawn; i < drawn + p.seats; i++) {
+          const pos = positions[i];
+          const cx = 5.0 + 100.0 * pos.x;
+          const cy = 5.0 + 100.0 * (1.75 - pos.y);
+          const r = circleRadius * 100.0;
+          svg += `<circle cx="${cx}" cy="${cy}" r="${r}" />`;
+        }
+        svg += `</g>`;
+        drawn += p.seats;
+      });
+
+      svg += `</g></svg>`;
+      return svg;
+    }
+
+    function getSpotCentres(totalSeats, rowCount, denseRows) {
+      let discardRows = 0, diagramFullness = 1;
+      if (denseRows) {
+        [discardRows, diagramFullness] = optimiseRows(totalSeats, rowCount);
+      } else {
+        diagramFullness = totalSeats / totals[rowCount - 1];
+      }
+
+      let positions = [];
+      for (let i = discardRows + 1; i < rowCount; i++) {
+        positions = appendRowSeats(positions, i, rowCount, diagramFullness);
+      }
+      positions = appendFinalSeats(positions, totalSeats - positions.length, rowCount);
+      positions.sort((a, b) => b.angle - a.angle || b.x - a.x || b.y - a.y);
+      return positions;
+    }
+
+    function optimiseRows(totalSeats, rowCount) {
+      let handled = 0;
+      for (let i = rowCount; i > 0; i--) {
+        const magic = 3 * rowCount + 4 * i - 2;
+        const maxInRow = Math.PI / (2 * Math.asin(2 / magic));
+        handled += Math.trunc(maxInRow);
+        if (handled >= totalSeats) {
+          return [i - 1, totalSeats / handled];
+        }
+      }
+      return [0, 0];
+    }
+
+    function appendRowSeats(positions, index, rowCount, fullness) {
+      const magic = 3.0 * rowCount + 4.0 * index - 2.0;
+      const maxSeats = Math.PI / (2 * Math.asin(2.0 / magic));
+      const seats = Math.trunc(fullness * maxSeats);
+      const radius = magic / (4.0 * rowCount);
+      return appendSeatPositions(positions, seats, radius, 0.4 / rowCount);
+    }
+
+    function appendFinalSeats(positions, leftover, rowCount) {
+      const radius = (7 * rowCount - 2) / (4 * rowCount);
+      return appendSeatPositions(positions, leftover, radius, 0.4 / rowCount);
+    }
+
+    function appendSeatPositions(positions, seatsInRow, rowRadius, circleRadius) {
+      const ratio = Math.sin(circleRadius / rowRadius);
+      for (let i = 0; i < seatsInRow; i++) {
+        let angle = seatsInRow === 1 ? Math.PI / 2 : i * (Math.PI - 2 * ratio) / (seatsInRow - 1) + ratio;
+        positions.push({
+          angle,
+          x: rowRadius * Math.cos(angle) + 1.75,
+          y: rowRadius * Math.sin(angle)
+        });
+      }
+      return positions;
+    }
+
+    // === Ergebnis anzeigen ===
+    function displayResults(parties, title) {
+      resultTableBody.innerHTML = '';
+      legendContainer.innerHTML = '';
+      parliamentSvg.innerHTML = '';
+
+      parties.forEach(p => {
+        const row = document.createElement('tr');
+        const share = ((p.seats / TOTAL_SEATS) * 100).toFixed(2);
+        row.innerHTML = `
+          <td><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:${p.color};margin-right:8px;"></span>${p.name}</td>
+          <td>${p.percent.toFixed(2)}%</td>
+          <td class="seats">${p.seats}</td>
+          <td>${share}%</td>
+        `;
+        resultTableBody.appendChild(row);
+      });
+
+      parties.forEach(p => {
+        const item = document.createElement('div');
+        item.className = 'legend-item';
+        item.innerHTML = `<div class="legend-color" style="background:${p.color};"></div><span>${p.name}: ${p.seats} Sitze</span>`;
+        legendContainer.appendChild(item);
+      });
+
+      const svg = generateArchSVG(parties, title);
+      parliamentSvg.innerHTML = svg;
+
+      resultSection.classList.remove('hidden');
+    }
+
+    // === Initial ===
+    addPartyBtn.click();
+  </script>
+</body>
+</html>

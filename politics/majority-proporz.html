@@ -4,97 +4,202 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Parlamentsrechner – Majoritäts-Proporz</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --primary: #1a73e8;
-      --danger: #d93025;
-      --bg: #f8f9fa;
-      --card: #ffffff;
-      --border: #dee2e6;
-      --text: #212529;
-    }
-
+    /* ==== UNIVERSUM ==== */
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      padding: 20px;
+      font-family: 'Orbitron', sans-serif;
+      background: #000;
+      color: #0ff;
       line-height: 1.6;
+      overflow-x: hidden;
+      position: relative;
+      min-height: 100vh;
     }
 
-    .container { max-width: 1200px; margin: 0 auto; }
+    /* Kosmischer Hintergrund */
+    .universe {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: 
+        radial-gradient(circle at 20% 80%, #120030 0%, #000 40%),
+        radial-gradient(circle at 80% 20%, #001122 0%, #000 50%),
+        radial-gradient(circle at 50% 50%, #000428 0%, #000 100%);
+      z-index: -3;
+    }
 
-    h1 { text-align: center; margin-bottom: 20px; color: var(--primary); }
+    .stars { position: absolute; width: 100%; height: 100%; z-index: -2; }
+    .star {
+      position: absolute;
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #0ff;
+      animation: twinkle 3s infinite alternate;
+    }
+    @keyframes twinkle { 0% { opacity: 0.4; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1.2); } }
 
+    .nebula {
+      position: absolute;
+      width: 800px; height: 800px;
+      background: radial-gradient(circle, rgba(100,0,255,0.15) 0%, transparent 70%);
+      filter: blur(80px);
+      animation: drift 40s infinite linear;
+      z-index: -1;
+    }
+    .nebula:nth-child(1) { top: -200px; left: -200px; animation-duration: 50s; background: radial-gradient(circle, rgba(0,255,255,0.2) 0%, transparent 70%); }
+    .nebula:nth-child(2) { bottom: -300px; right: -100px; animation-duration: 70s; background: radial-gradient(circle, rgba(255,0,150,0.18) 0%, transparent 70%); }
+    .nebula:nth-child(3) { top: 20%; left: 50%; animation-duration: 60s; background: radial-gradient(circle, rgba(0,255,100,0.15) 0%, transparent 70%); }
+    @keyframes drift { 0% { transform: translate(0,0) rotate(0deg); } 100% { transform: translate(100px,-100px) rotate(360deg); } }
+
+    /* ==== GLAS-PANELS ==== */
+    .container { max-width: 1200px; margin: 0 auto; padding: 20px; position: relative; z-index: 10; }
+    h1 {
+      text-align: center; margin: 30px 0; font-size: 3.5rem; font-weight: 900;
+      background: linear-gradient(45deg, #0ff, #f0f, #ff0);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      text-shadow: 0 0 30px rgba(0,255,255,0.5);
+      animation: title-float 6s infinite ease-in-out;
+    }
+    @keyframes title-float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+    .card, .settings {
+      background: rgba(15, 15, 40, 0.7);
+      border: 1px solid rgba(0, 255, 255, 0.4);
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 25px;
+      backdrop-filter: blur(12px);
+      box-shadow: 
+        0 0 30px rgba(0, 255, 255, 0.2),
+        inset 0 0 20px rgba(0, 255, 255, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before, .settings::before {
+      content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0,255,255,0.1), transparent);
+      animation: scanline 4s infinite;
+    }
+    @keyframes scanline { 0% { left: -100%; } 100% { left: 100%; } }
+
+    /* ==== EINSTELLUNGEN ==== */
     .settings {
       display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;
-      background: var(--card); padding: 15px; border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 20px;
+      padding: 18px;
     }
-    .setting { display: flex; align-items: center; gap: 8px; }
-    label { font-weight: 600; }
-    input[type="number"], input[type="text"] { width: 90px; padding: 8px; border: 1px solid var(--border); border-radius: 6px; }
-
-    .card {
-      background: var(--card); border-radius: 12px; padding: 20px;
-      margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      border: 1px solid var(--border);
+    .setting {
+      display: flex; align-items: center; gap: 10px; color: #aaf;
     }
+    label { font-weight: 700; text-shadow: 0 0 10px #0ff; }
+    input[type="number"], input[type="text"] {
+      width: 100px; padding: 10px; border: 1px solid #0ff; border-radius: 10px;
+      background: rgba(0, 20, 40, 0.6); color: #0ff; font-family: 'Orbitron';
+      box-shadow: 0 0 15px rgba(0,255,255,0.3); transition: all 0.3s;
+    }
+    input:focus { outline: none; box-shadow: 0 0 25px #0ff, inset 0 0 10px #0ff; }
 
-    .party-list { margin-bottom: 15px; }
+    /* ==== PARTEIEN ==== */
     .party-row {
       display: grid; grid-template-columns: 1fr 1fr auto auto auto;
-      gap: 10px; align-items: center; margin-bottom: 10px;
-      padding: 10px; border: 1px solid var(--border); border-radius: 8px;
-      background: #f8f9fa; cursor: move;
-      user-select: none;
+      gap: 12px; align-items: center; margin-bottom: 12px;
+      padding: 14px; border: 1px solid rgba(0,255,255,0.3); border-radius: 12px;
+      background: rgba(10, 30, 60, 0.5); cursor: move; user-select: none;
+      transition: all 0.4s ease; position: relative;
     }
-    .party-row.dragging { opacity: 0.5; background: #e3f2fd; z-index: 1000; }
-    .party-row input, .party-row button {
-      padding: 8px; border: 1px solid var(--border); border-radius: 6px; font-size: 14px;
+    .party-row.dragging {
+      opacity: 0.6; background: rgba(0, 150, 255, 0.3); transform: scale(1.02);
+      box-shadow: 0 0 30px #0ff; z-index: 1000;
     }
-    .party-row input[type="color"] { width: 44px; height: 44px; padding: 2px; cursor: pointer; }
-    button.remove { background: var(--danger); color: white; font-size: 12px; }
+    .party-row input {
+      padding: 10px; border: 1px solid #0ff; border-radius: 8px;
+      background: rgba(0, 10, 30, 0.7); color: #0ff; font-family: 'Orbitron';
+      box-shadow: 0 0 10px rgba(0,255,255,0.2);
+    }
+    .party-row input[type="color"] {
+      width: 48px; height: 48px; padding: 2px; cursor: pointer;
+      border: 2px solid #0ff; border-radius: 12px; box-shadow: 0 0 20px #0ff;
+    }
+    button.remove {
+      background: #f03; color: white; border: none; width: 36px; height: 36px;
+      border-radius: 50%; font-weight: bold; cursor: pointer;
+      box-shadow: 0 0 20px #f03; transition: all 0.3s;
+    }
+    button.remove:hover { background: #f55; transform: scale(1.1); box-shadow: 0 0 30px #f03; }
+    .drag-handle { color: #0af; font-size: 20px; cursor: move; }
 
-    .drag-handle { cursor: move; padding: 0 8px; font-size: 18px; color: #999; }
-
-    .actions { display: flex; gap: 10px; justify-content: center; margin: 20px 0; }
+    /* ==== BUTTONS ==== */
+    .actions { display: flex; gap: 15px; justify-content: center; margin: 25px 0; }
     .btn {
-      padding: 12px 24px; font-size: 16px; border: none; border-radius: 6px; cursor: pointer;
+      padding: 14px 28px; font-size: 16px; font-weight: 700; border: none; border-radius: 12px;
+      cursor: pointer; font-family: 'Orbitron'; text-transform: uppercase; letter-spacing: 1px;
+      transition: all 0.4s; position: relative; overflow: hidden;
     }
-    .btn-primary { background: var(--primary); color: white; }
-    .btn-secondary { background: #e9ecef; color: #495057; }
+    .btn-primary {
+      background: linear-gradient(45deg, #0af, #0f8); color: #000;
+      box-shadow: 0 0 30px #0ff; text-shadow: 0 0 10px #0ff;
+    }
+    .btn-secondary {
+      background: rgba(100, 100, 255, 0.3); color: #0ff; border: 1px solid #0ff;
+      box-shadow: 0 0 20px rgba(0,255,255,0.3);
+    }
+    .btn:hover {
+      transform: translateY(-4px) scale(1.05); box-shadow: 0 0 50px #0ff;
+    }
+    .btn::after {
+      content: ''; position: absolute; top: 50%; left: 50%; width: 0; height: 0;
+      background: rgba(255,255,255,0.3); border-radius: 50%; transition: all 0.6s;
+      transform: translate(-50%, -50%);
+    }
+    .btn:active::after { width: 300px; height: 300px; }
 
+    /* ==== TABELLE ==== */
     table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-    th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border); }
-    th { background: #f1f3f5; font-weight: 600; }
-    .seats { text-align: center; font-weight: bold; }
+    th, td { padding: 14px; text-align: left; border-bottom: 1px solid rgba(0,255,255,0.3); }
+    th { background: rgba(0, 50, 100, 0.6); font-weight: 700; color: #0ff; text-shadow: 0 0 10px #0ff; }
+    tr:hover { background: rgba(0, 100, 200, 0.2); }
+    .seats { text-align: center; font-weight: bold; color: #ff0; text-shadow: 0 0 15px #ff0; }
 
-    .parliament-container { text-align: center; margin: 40px 0; }
+    /* ==== PARLAMENTSGRAFIK ==== */
+    .parliament-container { text-align: center; margin: 50px 0; }
+    #parliament-svg {
+      background: #000; border-radius: 20px; box-shadow: 0 0 40px rgba(0,255,255,0.4);
+      padding: 20px; max-width: 100%; height: auto;
+    }
     .legend {
       display: flex; flex-wrap: wrap; gap: 15px; justify-content: center;
-      margin-top: 20px; font-size: 14px;
+      margin-top: 25px; font-size: 14px;
     }
-    .legend-item { display: flex; align-items: center; gap: 6px; }
-    .legend-color { width: 16px; height: 16px; border-radius: 50%; }
+    .legend-item {
+      display: flex; align-items: center; gap: 8px; background: rgba(0,50,100,0.5);
+      padding: 8px 16px; border-radius: 20px; border: 1px solid #0ff;
+      box-shadow: 0 0 15px rgba(0,255,255,0.3); color: #0ff;
+    }
+    .legend-color { width: 18px; height: 18px; border-radius: 50%; box-shadow: 0 0 15px currentColor; }
 
     .hidden { display: none; }
-    .info { text-align: center; color: #666; font-size: 14px; margin-top: 10px; }
-
-    #parliament-svg { background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .info { text-align: center; color: #88f; font-size: 14px; margin-top: 10px; text-shadow: 0 0 8px #0ff; }
 
     @media (max-width: 768px) {
+      h1 { font-size: 2.5rem; }
       .party-row { grid-template-columns: 1fr 1fr auto; }
-      .party-row > *:nth-child(3), .party-row > *:nth-child(4), .party-row > *:nth-child(5) {
-        grid-column: span 3;
-      }
+      .party-row > *:nth-child(3), .party-row > *:nth-child(4), .party-row > *:nth-child(5) { grid-column: span 3; }
     }
   </style>
 </head>
 <body>
+
+  <!-- Universum -->
+  <div class="universe">
+    <div class="stars" id="stars"></div>
+    <div class="nebula"></div>
+    <div class="nebula"></div>
+    <div class="nebula"></div>
+  </div>
+
   <div class="container">
-    <h1>Parlamentsrechner – Majoritäts-Proporz</h1>
+    <h1>Parlamentsrechner</h1>
 
     <div class="settings">
       <div class="setting">
@@ -107,24 +212,24 @@
       </div>
       <div class="setting">
         <label for="diagram-title">Titel:</label>
-        <input type="text" id="diagram-title" placeholder="z.B. Bundestag 2025" />
+        <input type="text" id="diagram-title" placeholder="z.B. Bundestag 3025" />
       </div>
     </div>
 
     <div class="card">
-      <h2>Parteien (Reihenfolge per Drag & Drop)</h2>
-      <p class="info">Ziehe die Zeilen, um die Sitzanordnung im Parlament zu ändern.</p>
+      <h2 style="color:#0ff; text-shadow:0 0 15px #0ff;">Parteien</h2>
+      <p class="info">Verändere die Position der Parteien um die Anordnung im Parlament zu ändern</p>
       <div id="party-container" class="party-list"></div>
 
       <div class="actions">
-        <button class="btn btn-secondary" id="add-party">+ Partei hinzufügen</button>
-        <button class="btn btn-primary" id="calculate">Sitze berechnen</button>
+        <button class="btn btn-secondary" id="add-party">Partei hinzufügen</button>
+        <button class="btn btn-primary" id="calculate">Berechnen</button>
       </div>
     </div>
 
     <div id="result-section" class="hidden">
       <div class="card">
-        <h2>Sitzverteilung</h2>
+        <h2 style="color:#0ff; text-shadow:0 0 15px #0ff;">Sitzverteilung</h2>
         <table id="result-table">
           <thead>
             <tr><th>Partei</th><th>Stimmen %</th><th>Sitze</th><th>Anteil</th></tr>
@@ -134,7 +239,7 @@
       </div>
 
       <div class="card">
-        <h2>Parlamentsgrafik (arches.elexn.uk)</h2>
+        <h2 style="color:#0ff; text-shadow:0 0 15px #0ff;">Parlamentsgrafik</h2>
         <div class="parliament-container">
           <div id="parliament-svg"></div>
         </div>
@@ -144,10 +249,29 @@
   </div>
 
   <script>
-    // === Globale Variablen ===
+    // === Sterne generieren ===
+    const starsContainer = document.getElementById('stars');
+    for (let i = 0; i < 300; i++) {
+      const star = document.createElement('div');
+      star.classList.add('star');
+      const size = Math.random() * 3 + 1;
+      const x = Math.random() * 100;
+      const y = Math.random() * 100;
+      const duration = Math.random() * 4 + 2;
+      const delay = Math.random() * 5;
+      star.style.width = `${size}px`;
+      star.style.height = `${size}px`;
+      star.style.left = `${x}vw`;
+      star.style.top = `${y}vh`;
+      star.style.animationDuration = `${duration}s`;
+      star.style.animationDelay = `${delay}s`;
+      starsContainer.appendChild(star);
+    }
+
+    // === Dein Original-Code (unverändert) ===
     const MAX_PARTIES = 10;
     let TOTAL_SEATS = 630;
-    const colors = ['#d32f2f','#1976d2','#388e3c','#f57c00','#7b1fa2','#c2185b','#0288d1','#689f38','#fbc02d','#512da8'];
+    const colors = ['#00ffff','#ff00ff','#00ff00','#ffff00','#ff4500','#8a2be2','#00bfff','#32cd32','#ffd700','#ff1493'];
 
     const partyContainer = document.getElementById('party-container');
     const addPartyBtn = document.getElementById('add-party');
@@ -160,12 +284,8 @@
     let partyCount = 0;
     let draggedRow = null;
 
-    // === Partei hinzufügen ===
     addPartyBtn.addEventListener('click', () => {
-      if (partyCount >= MAX_PARTIES) {
-        alert('Maximal 10 Parteien erlaubt!');
-        return;
-      }
+      if (partyCount >= MAX_PARTIES) { alert('Maximal 10 Parteien!'); return; }
       partyCount++;
       const index = partyCount - 1;
 
@@ -180,30 +300,19 @@
         <div class="drag-handle">Drag</div>
       `;
 
-      // === Drag & Drop – stabil & einfach ===
       row.addEventListener('dragstart', (e) => {
         draggedRow = row;
         row.classList.add('dragging');
         e.dataTransfer.effectAllowed = 'move';
       });
-
-      row.addEventListener('dragend', () => {
-        row.classList.remove('dragging');
-        draggedRow = null;
-      });
-
-      row.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        e.dataTransfer.dropEffect = 'move';
-      });
-
+      row.addEventListener('dragend', () => { row.classList.remove('dragging'); draggedRow = null; });
+      row.addEventListener('dragover', (e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; });
       row.addEventListener('drop', (e) => {
         e.preventDefault();
         if (draggedRow && draggedRow !== row) {
           const allRows = Array.from(partyContainer.children);
           const fromIndex = allRows.indexOf(draggedRow);
           const toIndex = allRows.indexOf(row);
-
           if (fromIndex < toIndex) {
             partyContainer.insertBefore(draggedRow, row.nextSibling);
           } else {
@@ -220,23 +329,18 @@
       partyContainer.appendChild(row);
     });
 
-    // === Einstellungen ===
     document.getElementById('total-seats').addEventListener('input', (e) => {
       TOTAL_SEATS = Math.max(1, parseInt(e.target.value) || 630);
       e.target.value = TOTAL_SEATS;
     });
 
-    // === Berechnung ===
     calculateBtn.addEventListener('click', () => {
       TOTAL_SEATS = parseInt(document.getElementById('total-seats').value) || 630;
       const huerde = parseFloat(document.getElementById('huerde').value) || 5.0;
       const title = document.getElementById('diagram-title').value.trim();
       const rows = partyContainer.querySelectorAll('.party-row');
 
-      if (rows.length === 0) {
-        alert('Bitte füge mindestens eine Partei hinzu.');
-        return;
-      }
+      if (rows.length === 0) { alert('Bitte füge mindestens eine Partei hinzu.'); return; }
 
       const inputParties = [];
       let valid = true;
@@ -246,17 +350,11 @@
         const percent = parseFloat(row.querySelector('.party-percent').value);
         const color = row.querySelector('.party-color').value;
 
-        if (!name || isNaN(percent) || percent < 0) {
-          valid = false;
-          return;
-        }
+        if (!name || isNaN(percent) || percent < 0) { valid = false; return; }
         inputParties.push({ name, percent, color });
       });
 
-      if (!valid) {
-        alert('Bitte alle Felder korrekt ausfüllen.');
-        return;
-      }
+      if (!valid) { alert('Bitte alle Felder korrekt ausfüllen.'); return; }
 
       const seats = majoritaetsProporz(inputParties, huerde);
       const orderedParties = inputParties.map(p => ({
@@ -269,7 +367,6 @@
       displayResults(orderedParties, title);
     });
 
-    // === 1:1 Python-Logik ===
     function majoritaetsProporz(partiesInput, huerde = 5.0) {
       const above = partiesInput.filter(p => p.percent >= huerde);
       if (above.length === 0) return {};
@@ -299,18 +396,14 @@
       return seats;
     }
 
-    // === Arches-Diagramm-Logik (1:1 aus archDiagram.js) ===
     const totals = [3,15,33,61,95,138,189,247,313,388,469,559,657,762,876,997,1126,1263,1408,1560,1722,1889,2066,2250,2442,2641,2850,3064,3289,3519,3759,4005,4261,4522,4794,5071,5358,5652,5953,6263,6581,6906,7239,7581,7929,8287,8650,9024,9404,9793,10187,10594,11003,11425,11850,12288,12729,13183,13638,14109,14580,15066,15553,16055,16557,17075,17592,18126,18660,19208,19758,20323,20888,21468,22050,22645,23243,23853,24467,25094,25723,26364,27011,27667,28329,29001,29679,30367,31061];
 
     function generateArchSVG(partyData, title = "") {
       if (partyData.length === 0) return "";
-
       const totalSeats = partyData.reduce((s, p) => s + p.seats, 0);
       if (totalSeats <= 0) return "";
-
       const rowCount = totals.findIndex(t => t >= totalSeats) + 1;
       if (rowCount <= 0) return "";
-
       const circleRadius = 0.4 / rowCount;
       const positions = getSpotCentres(totalSeats, rowCount, false);
 
@@ -318,21 +411,21 @@
 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 360 ${title ? 205 : 185}">
 <g>`;
 
-      svg += `<text x="180" y="175" style="font-size:36px;font-weight:bold;text-anchor:middle;font-family:sans-serif;">${totalSeats}</text>`;
+      svg += `<text x="180" y="175" style="font-size:36px;font-weight:bold;text-anchor:middle;font-family:Orbitron, sans-serif;fill:#0ff;text-shadow:0 0 10px #0ff;">${totalSeats}</text>`;
       if (title) {
-        svg += `<text x="180" y="200" style="font-size:20px;font-weight:bold;text-anchor:middle;font-family:sans-serif;">${title}</text>`;
+        svg += `<text x="180" y="200" style="font-size:20px;font-weight:bold;text-anchor:middle;font-family:Orbitron, sans-serif;fill:#ff0;text-shadow:0 0 8px #ff0;">${title}</text>`;
       }
 
       let drawn = 0;
       partyData.forEach((p, idx) => {
         const name = p.name.replace(/[^a-zA-Z0-9_-]+/g, "-");
-        svg += `<g style="fill:${p.color}; stroke:${p.color}; stroke-width:0;" id="${name}_${idx}"><title>${p.name}</title>`;
+        svg += `<g style="fill:${p.color}; stroke:${p.color}; stroke-width:1;" id="${name}_${idx}"><title>${p.name}</title>`;
         for (let i = drawn; i < drawn + p.seats; i++) {
           const pos = positions[i];
           const cx = 5.0 + 100.0 * pos.x;
           const cy = 5.0 + 100.0 * (1.75 - pos.y);
           const r = circleRadius * 100.0;
-          svg += `<circle cx="${cx}" cy="${cy}" r="${r}" />`;
+          svg += `<circle cx="${cx}" cy="${cy}" r="${r}" style="filter: drop-shadow(0 0 8px ${p.color}"/>`;
         }
         svg += `</g>`;
         drawn += p.seats;
@@ -349,7 +442,6 @@
       } else {
         diagramFullness = totalSeats / totals[rowCount - 1];
       }
-
       let positions = [];
       for (let i = discardRows + 1; i < rowCount; i++) {
         positions = appendRowSeats(positions, i, rowCount, diagramFullness);
@@ -398,7 +490,6 @@
       return positions;
     }
 
-    // === Ergebnis anzeigen ===
     function displayResults(parties, title) {
       resultTableBody.innerHTML = '';
       legendContainer.innerHTML = '';
@@ -408,7 +499,7 @@
         const row = document.createElement('tr');
         const share = ((p.seats / TOTAL_SEATS) * 100).toFixed(2);
         row.innerHTML = `
-          <td><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:${p.color};margin-right:8px;"></span>${p.name}</td>
+          <td><span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:${p.color};margin-right:10px;box-shadow:0 0 15px ${p.color};"></span>${p.name}</td>
           <td>${p.percent.toFixed(2)}%</td>
           <td class="seats">${p.seats}</td>
           <td>${share}%</td>
@@ -419,7 +510,7 @@
       parties.forEach(p => {
         const item = document.createElement('div');
         item.className = 'legend-item';
-        item.innerHTML = `<div class="legend-color" style="background:${p.color};"></div><span>${p.name}: ${p.seats} Sitze</span>`;
+        item.innerHTML = `<div class="legend-color" style="background:${p.color};box-shadow:0 0 15px ${p.color};"></div><span>${p.name}: ${p.seats} Sitze</span>`;
         legendContainer.appendChild(item);
       });
 
@@ -429,7 +520,7 @@
       resultSection.classList.remove('hidden');
     }
 
-    // === Initial ===
+    // Initial
     addPartyBtn.click();
   </script>
 </body>

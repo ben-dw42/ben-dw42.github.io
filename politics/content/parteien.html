@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Parteien - Die Welt</title>
+    <link rel="shortcut icon" href="/src/img/favicon-welt.png" type="image/x-icon" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SH5HLH12B1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-SH5HLH12B1');
+    </script>
+
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #1a2332;
+            --text-primary: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --accent-blue: #3b82f6;
+            --accent-purple: #8b5cf6;
+            --border: #334155;
+            --shadow: rgba(0, 0, 0, 0.4);
+
+            /* Neue Parteifarben */
+            --fvp: #a855f7;
+            /* Lila */
+            --dlk: #ef4444;
+            /* Rot */
+            --dvp: #3b82f6;
+            /* Blau */
+            --fdd: #ec4899;
+            /* Pink */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary), #0a0e1a);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.7;
+        }
+
+        /* Navigation */
+        nav {
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .nav-logo {
+            height: 34px;
+            filter: drop-shadow(0 0 8px rgba(139, 92, 246, 0.3));
+            transition: transform 0.3s;
+        }
+
+        .nav-logo:hover {
+            transform: scale(1.1);
+        }
+
+        .nav-link {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.75rem 1.25rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .nav-link:hover {
+            background: rgba(139, 92, 246, 0.15);
+            color: var(--accent-purple);
+            transform: translateY(-2px);
+        }
+
+        .nav-link.wahlomat {
+            background: linear-gradient(to right, var(--accent-blue), var(--accent-purple));
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+        }
+
+        .nav-link.wahlomat:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4);
+        }
+
+        /* Main Content */
+        main {
+            flex: 1;
+            padding: 2.5rem 1.5rem;
+            max-width: 1300px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .page-title h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8rem;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--accent-blue), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-meta {
+            text-align: center;
+            color: var(--text-secondary);
+            font-style: italic;
+            margin-bottom: 2.5rem;
+            font-size: 1.1rem;
+        }
+
+        /* Party Cards – BREITER */
+        .parties-container {
+            display: grid;
+            gap: 2.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            /* Breiter! */
+        }
+
+        .party-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            box-shadow: 0 8px 24px var(--shadow);
+            transition: all 0.4s ease;
+            animation: fadeInUp 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        .party-card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .party-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .party-card:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .party-card:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .party-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 18px 44px var(--shadow);
+        }
+
+        .party-header {
+            padding: 1.75rem;
+            color: white;
+            font-weight: 700;
+            font-size: 1.4rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .party-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 5px;
+            border-radius: 3px;
+            background: white;
+        }
+
+        /* Neue Farben */
+        .party-fvp .party-header {
+            background: linear-gradient(to right, #9333ea, #a855f7);
+        }
+
+        .party-dlk .party-header {
+            background: linear-gradient(to right, #dc2626, #ef4444);
+        }
+
+        .party-dvp .party-header {
+            background: linear-gradient(to right, #2563eb, #3b82f6);
+        }
+
+        .party-fdd .party-header {
+            background: linear-gradient(to right, #db2777, #ec4899);
+        }
+
+        .party-body {
+            padding: 2rem;
+        }
+
+        .party-info {
+            margin-bottom: 1.75rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .party-info p {
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        .party-info strong {
+            color: var(--text-primary);
+        }
+
+        .party-board {
+            background: var(--bg-secondary);
+            padding: 1.5rem;
+            border-radius: 16px;
+            margin-bottom: 1.75rem;
+        }
+
+        .board-title {
+            font-weight: 600;
+            color: var(--accent-purple);
+            margin-bottom: 1.25rem;
+            font-size: 1.2rem;
+        }
+
+        .board-member {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+            font-size: 0.95rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .board-member:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .board-role {
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        .board-name {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .party-program {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: rgba(139, 92, 246, 0.15);
+            color: var(--accent-purple);
+            padding: 0.9rem 1.5rem;
+            border-radius: 14px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+
+        .party-program:hover {
+            background: var(--accent-purple);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4);
+        }
+
+        .party-program svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(12px);
+            padding: 1.5rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border);
+            margin-top: 3rem;
+        }
+
+        footer a {
+            color: var(--accent-purple);
+            text-decoration: underline;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .parties-container {
+                grid-template-columns: 1fr;
+            }
+
+            .party-info {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .page-title h1 {
+                font-size: 2.3rem;
+            }
+
+            .party-header {
+                font-size: 1.3rem;
+                padding: 1.5rem;
+            }
+
+            .party-body {
+                padding: 1.75rem;
+            }
+
+            .board-member {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="/index.html">
+                <img src="/src/img/Screenshot_2025-11-04_111207-removebg-preview.png" alt="Die Welt Logo"
+                    class="nav-logo">
+            </a>
+            <a href="/content/artikel.html" class="nav-link">Artikel</a>
+            <a href="/content/umfragen.html" class="nav-link">Umfragen</a>
+            <a href="/content/parteien.html" class="nav-link">Parteien</a>
+            <a href="/content/politiker.html" class="nav-link">Politiker</a>
+            <a href="/content/bundestag.html" class="nav-link">Bundestag</a>
+            <a href="/content/bundesregierung.html" class="nav-link">Bundesregierung</a>
+            <a href="/content/gesetze.html" class="nav-link">BGBl</a>
+            <a href="/content/gesetze-im-internet.html" class="nav-link">Gesetze im Internet</a>
+            <a href="/content/wahlomat.html" class="nav-link wahlomat">Wahl-O-Mat</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <div class="page-title">
+            <h1>Politische Parteien</h1>
+        </div>
+        <div class="page-meta">
+            <strong>Stand: 03. November 2025</strong>
+        </div>
+
+        <!-- Parties -->
+        <div class="parties-container">
+            <!-- FVP - Lila -->
+            <div class="party-card party-fvp">
+                <div class="party-header">FVP - Freie Volkspartei</div>
+                <div class="party-body">
+                    <div class="party-info">
+                        <p><strong>Politische Ausrichtung:</strong> Freiheitlich-konservativ</p>
+                        <p><strong>Mitgliederzahl:</strong> 15</p>
+                        <p><strong>Abgeordnete im Bundestag:</strong> 4</p>
+                    </div>
+                    <div class="party-board">
+                        <div class="board-title">Bundesvorstand</div>
+                        <div class="board-member">
+                            <span class="board-role">Bundesvorsitzende:</span>
+                            <span class="board-name">Dr. Julian Schmidt + Dr. Anil Lindner</span>
+                        </div>
+                        <div class="board-member">
+                            <span class="board-role">Stv. Bundesvorsitzender:</span>
+                            <span class="board-name">Dr. Ben Baumann</span>
+                        </div>
+                        <div class="board-member">
+                            <span class="board-role">Generalsekretär:</span>
+                            <span class="board-name">Orkun Elik</span>
+                        </div>
+                        <div class="board-member">
+                            <span class="board-role">Beisitzer:</span>
+                            <span class="board-name">Martin Krall</span>
+                        </div>
+                    </div>
+                    <a href="/content/parteiprogramme/Regierungsprogramm_20251027_192318_0000%20(2).pdf" target="_blank"
+                        class="party-program">
+                        <svg fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                                d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-5L9 2H4zm0 8h12v2H4v-2z" />
+                        </svg>
+                        Wahlprogramm
+                    </a>
+                </div>
+            </div>
+
+            <!-- DLK - Rot -->
+            <div class="party-card party-dlk">
+                <div class="party-header">DLK - Die Linke Kraft</div>
+                <div class="party-body">
+                    <div class="party-info">
+                        <p><strong>Politische Ausrichtung:</strong> Links</p>
+                        <p><strong>Mitgliederzahl:</strong> 14</p>
+                        <p><strong>Abgeordnete im Bundestag:</strong> 4</p>
+                    </div>
+                    <div class="party-board">
+                        <div class="board-title">Bundesvorstand</div>
+                        <div class="board-member">
+                            <span class="board-role">Bundesvorsitzende:</span>
+                            <span class="board-name">Dr. Noah Soze</span>
+                        </div>
+                        <div class="board-member">
+                            <span class="board-role">Stv. Bundesvorsitzender:</span>
+                            <span class="board-name">Jonas Krüger</span>
+                        </div>
+                        <div class="board-member">
+                            <span class="board-role">Generalsekretär:</span>
+                            <span class="board-name">Ernst Hartmann</span>
+                        </div>
+                        <div class="board-member">
+                            <span class="board-role">Beisitzer:</span>
+                            <span class="board-name">Juli Engels</span>
+                        </div>
+                    </div>
+                    <a href="/content/parteiprogramme/ProgrammDLK%20(1).pdf" target="_blank" class="party-program">
+                        <svg fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                                d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-5L9 2H4zm0 8h12v2H4v-2z" />
+                        </svg>
+                        Wahlprogramm
+                    </a>
+                </div>
+            </div>
+
+            <!-- DVP - Blau -->
+            <div class="party-card party-dvp">
+                <div class="party-header">DVP - Deutsche Volkspartei</div>
+                <div class="party-body">
+                    <div class="party-info">
+                        <p><strong>Politische Ausrichtung:</strong> Rechtskonservativ</p>
+                        <p><strong>Mitgliederzahl:</strong> 5</p>
+                        <p><strong>Abgeordnete im Bundestag:</strong> 3</p>
+                    </div>
+                    <div class="party-board">
+                        <div class="board-title">Bundesvorstand</div>
+                        <div class="board-member">
+                            <span class="board-role">Bundesvorsitzender:</span>
+                            <span class="board-name">Dr. Ben Richter</span>
+                        </div>
+                        <div class="board-member">
+                            <span class="board-role">Stv. Bundesvorsitzender:</span>
+                            <span class="board-name">Gaius Iulius Bonus</span>
+                        </div>
+                        <div class="board-member">
+                            <span class="board-role">Generalsekretär:</span>
+                            <span class="board-name">Dr. Jannik Frohnmaier</span>
+                        </div>
+                        <div class="board-member">
+                            <span class="board-role">Mitgliederbeauftragter:</span>
+                            <span class="board-name">Markus Spahn</span>
+                        </div>
+                    </div>
+                    <a href="/content/parteiprogramme/Grundsatzprogramm%20der%20DVP.pdf" target="_blank"
+                        class="party-program">
+                        <svg fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                                d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-5L9 2H4zm0 8h12v2H4v-2z" />
+                        </svg>
+                        Grundsatzprogramm
+                    </a>
+                </div>
+            </div>
+
+            <!-- FDD - Pink -->
+            <div class="party-card party-fdd">
+                <div class="party-header">FDD - Freies Demokratisches Deutschland</div>
+                <div class="party-body">
+                    <div class="party-info">
+                        <p><strong>Politische Ausrichtung:</strong> Liberal</p>
+                        <p><strong>Mitgliederzahl:</strong> 5</p>
+                        <p><strong>Abgeordnete im Bundestag:</strong> 4</p>
+                    </div>
+                    <div class="party-board">
+                        <div class="board-title">Bundesvorstand</div>
+                        <div class="board-member">
+                            <span class="board-role">Bundesvorsitzende:</span>
+                            <span class="board-name">Aaron Maas + Markus Fechner</span>
+                        </div>
+                        <div class="board-member">
+                            <span class="board-role">Generalsekretär:</span>
+                            <span class="board-name">Bernd Bas</span>
+                        </div>
+                    </div>
+                    <a href="/content/parteiprogramme/programm_demlib.pdf" target="_blank" class="party-program">
+                        <svg fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                                d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-5L9 2H4zm0 8h12v2H4v-2z" />
+                        </svg>
+                        Grundsatzprogramm
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>
+            © 2025–2030 Ben S. Alle Rechte vorbehalten.<br>
+            Diese Internetseite ist Teil einer <strong>Discord-Politiksimulation</strong> und dient lediglich zu
+            <em>Bildungszwecken</em>.
+        </p>
+    </footer>
+
+</body>
+
+</html>

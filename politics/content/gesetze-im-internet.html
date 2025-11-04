@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gesetze im Internet - Die Welt</title>
+    <link rel="shortcut icon" href="/src/img/favicon-welt.png" type="image/x-icon" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SH5HLH12B1"></script>
+    <script>window.dataLayer = window.dataLayer || []; function gtag() { dataLayer.push(arguments); } gtag('js', new Date()); gtag('config', 'G-SH5HLH12B1');</script>
+
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #1a2332;
+            --text-primary: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --accent-purple: #8b5cf6;
+            --border: #334155;
+            --shadow: rgba(0, 0, 0, 0.4);
+            --fvp: #a855f7;
+            --dlk: #ef4444;
+            --dvp: #3b82f6;
+            --regierung: #64748b;
+            --status-in-kraft: #10b981;
+            --status-beratung: #f59e0b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary), #0a0e1a);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.7;
+        }
+
+        nav {
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .nav-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .nav-logo {
+            height: 34px;
+            transition: transform .2s;
+        }
+
+        .nav-logo:hover {
+            transform: scale(1.05);
+        }
+
+        .nav-link {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            padding: .75rem 1.25rem;
+            border-radius: 8px;
+            transition: all .2s;
+            font-size: .95rem;
+        }
+
+        .nav-link:hover {
+            background: rgba(139, 92, 246, .1);
+            color: var(--accent-purple);
+        }
+
+        .nav-link.wahlomat {
+            background: var(--accent-purple);
+            color: white;
+            font-weight: 600;
+        }
+
+        .nav-link.wahlomat:hover {
+            background: #7c3aed;
+        }
+
+        main {
+            flex: 1;
+            padding: 2.5rem 1.5rem;
+            max-width: 1300px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-title h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8rem;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--accent-purple), #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            font-style: italic;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: .5rem 1rem;
+        }
+
+        .search-icon {
+            color: var(--text-secondary);
+            margin-right: .75rem;
+            width: 20px;
+            height: 20px;
+        }
+
+        .search-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .search-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .gesetze {
+            display: grid;
+            gap: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+        }
+
+        .gesetz {
+            background: var(--bg-card);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            box-shadow: 0 6px 20px var(--shadow);
+            transition: all .3s;
+            animation: fadeInUp .6s ease-out forwards;
+            opacity: 0;
+            display: none;
+        }
+
+        .gesetz.visible {
+            display: block;
+        }
+
+        .gesetz:hover {
+            transform: translateY(-6px);
+        }
+
+        .g-header {
+            padding: 1.5rem;
+            color: white;
+            font-weight: 700;
+            font-size: 1.25rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .g-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70px;
+            height: 3px;
+            background: white;
+            border-radius: 2px;
+        }
+
+        .einbringer-regierung .g-header {
+            background: var(--regierung);
+        }
+
+        .einbringer-fvp .g-header {
+            background: var(--fvp);
+        }
+
+        .g-body {
+            padding: 1.75rem;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: .75rem;
+            font-size: .95rem;
+            align-items: center;
+        }
+
+        .info-label {
+            color: var(--text-secondary);
+            font-style: italic;
+            min-width: 140px;
+        }
+
+        .info-value {
+            color: var(--text-primary);
+            font-weight: 500;
+            text-align: right;
+            flex: 1;
+        }
+
+        .status-badge {
+            padding: .25rem .75rem;
+            border-radius: 20px;
+            font-size: .8rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .status-in-kraft {
+            background: var(--status-in-kraft);
+        }
+
+        .status-beratung {
+            background: var(--status-beratung);
+        }
+
+        .btn {
+            padding: .5rem 1rem;
+            border-radius: 8px;
+            font-size: .9rem;
+            cursor: pointer;
+            transition: all .2s;
+            margin-top: .5rem;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--accent-purple);
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: #7c3aed;
+        }
+
+        .tags {
+            display: flex;
+            gap: .5rem;
+            flex-wrap: wrap;
+            margin-top: .75rem;
+        }
+
+        .tag {
+            background: rgba(139, 92, 246, .2);
+            color: var(--accent-purple);
+            padding: .25rem .75rem;
+            border-radius: 6px;
+            font-size: .8rem;
+            font-weight: 500;
+        }
+
+        footer {
+            background: rgba(30, 41, 59, .95);
+            backdrop-filter: blur(12px);
+            padding: 1.5rem;
+            text-align: center;
+            font-size: .85rem;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border);
+            margin-top: 3rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, .8);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity .3s;
+        }
+
+        .modal.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 900px;
+            max-height: 90vh;
+            border: 1px solid var(--border);
+            box-shadow: 0 12px 40px var(--shadow);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-secondary);
+        }
+
+        .modal-title {
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: var(--text-primary);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--border);
+            text-align: right;
+            background: var(--bg-secondary);
+        }
+
+        .pdf-viewer {
+            width: 100%;
+            height: 70vh;
+            border: none;
+            border-radius: 12px;
+            margin-top: 1rem;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <div class="nav-container">
+            <a href="/index.html"><img src="/src/img/Screenshot_2025-11-04_111207-removebg-preview.png" alt="Logo"
+                    class="nav-logo"></a>
+            <a href="/content/artikel.html" class="nav-link">Artikel</a>
+            <a href="/content/umfragen.html" class="nav-link">Umfragen</a>
+            <a href="/content/parteien.html" class="nav-link">Parteien</a>
+            <a href="/content/politiker.html" class="nav-link">Politiker</a>
+            <a href="/content/bundestag.html" class="nav-link">Bundestag</a>
+            <a href="/content/bundesregierung.html" class="nav-link">Bundesregierung</a>
+            <a href="/content/gesetze.html" class="nav-link">BGBl</a>
+            <a href="/content/gesetze-im-internet.html" class="nav-link">Gesetze im Internet</a>
+            <a href="/content/wahlomat.html" class="nav-link wahlomat">Wahl-O-Mat</a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="page-title">
+            <h1>Gesetze im Internet</h1>
+        </div>
+        <div class="page-subtitle"><strong>Konsolidierte Fassungen – aktuell und mit Änderungshistorie</strong></div>
+
+        <div class="search-container">
+            <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input type="text" class="search-input" placeholder="Gesetz suchen..." id="search">
+        </div>
+
+        <div class="gesetze" id="gesetze"></div>
+    </main>
+
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title" id="modal-title">Gesetz</div>
+                <button class="modal-close" onclick="closeModal()">x</button>
+            </div>
+            <div class="modal-body" id="modal-body"></div>
+            <div class="modal-footer">
+                <button class="btn" style="background:#ef4444;color:white;" onclick="closeModal()">Schließen</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025–2030 Ben S. Alle Rechte vorbehalten.<br>
+            Diese Internetseite ist Teil einer <strong>Discord-Politiksimulation</strong> und dient lediglich zu
+            <em>Bildungszwecken</em>.</p>
+    </footer>
+
+    <script>
+        const gesetze = [
+            {
+                id: 1, titel: "Gesetz zur Reform des Deutschen Steuersystems", short: "Steuerreformgesetz", einbringer: "regierung", status: "in-kraft",
+                aktuell: { version: "1.1", datum: "15.11.2025", pdf: "/src/pdf/steuerreform_v1.1.pdf" },
+                versionen: [
+                    { version: "1.0", datum: "01.10.2025", pdf: "/src/pdf/steuerreform_v1.pdf", änderung: null },
+                    { version: "1.1", datum: "15.11.2025", pdf: "/src/pdf/steuerreform_v1.1.pdf", änderung: "§12 Abs. 3 geändert" }
+                ],
+                tags: ["Steuern", "Wirtschaft"]
+            }
+        ];
+
+        const container = document.getElementById('gesetze');
+        function render() {
+            container.innerHTML = '';
+            const q = document.getElementById('search').value.toLowerCase();
+            gesetze.filter(g => !q || g.titel.toLowerCase().includes(q) || g.short.toLowerCase().includes(q)).forEach((g, i) => {
+                const div = document.createElement('div');
+                div.className = `gesetz einbringer-${g.einbringer} visible`;
+                div.style.animationDelay = `${i * 0.1}s`;
+                div.innerHTML = `
+          <div class="g-header">${g.short} <small>v${g.aktuell.version}</small></div>
+          <div class="g-body">
+            <div class="info-row"><span class="info-label">Titel:</span><span class="info-value">${g.titel}</span></div>
+            <div class="info-row"><span class="info-label">Status:</span><span class="info-value"><span class="status-badge status-${g.status}">In Kraft</span></span></div>
+            <div class="info-row"><span class="info-label">Aktuell seit:</span><span class="info-value">${g.aktuell.datum}</span></div>
+            <button class="btn btn-primary" onclick="openModal(${g.id})">Änderungshistorie</button>
+            <button class="btn" style="background:var(--bg-secondary);margin-left:.5rem;" onclick="openPDF('${g.aktuell.pdf}')">PDF anzeigen</button>
+            <div class="tags">${g.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
+          </div>
+        `;
+                container.appendChild(div);
+            });
+        }
+
+        function openModal(id) {
+            const g = gesetze.find(x => x.id === id);
+            document.getElementById('modal-title').textContent = `${g.short} – Änderungshistorie`;
+            document.getElementById('modal-body').innerHTML = `
+        <div style="display:grid;gap:1rem;">
+          ${g.versionen.map(v => `
+            <div style="background:var(--bg-secondary);padding:1rem;border-radius:12px;">
+              <div style="display:flex;justify-content:space-between;font-weight:600;">
+                <span>Version ${v.version}</span>
+                <span style="color:var(--accent-purple);">${v.datum}</span>
+              </div>
+              ${v.änderung ? `<div style="margin-top:.5rem;color:var(--accent-purple);"><em>${v.änderung}</em></div>` : ''}
+              <button class="btn" style="background:var(--bg-secondary);margin-top:.75rem;" onclick="openPDF('${v.pdf}')">PDF anzeigen</button>
+            </div>
+          `).join('')}
+        </div>
+      `;
+            document.getElementById('modal').classList.add('show');
+        }
+
+        function openPDF(pdf) {
+            document.getElementById('modal-title').textContent = `PDF-Vorschau`;
+            document.getElementById('modal-body').innerHTML = `<iframe src="${pdf}" class="pdf-viewer"></iframe>`;
+            document.getElementById('modal').classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('show');
+        }
+
+        document.getElementById('search').addEventListener('input', render);
+        render();
+    </script>
+</body>
+
+</html>

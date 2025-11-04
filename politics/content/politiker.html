@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Politiker - Die Welt</title>
+    <link rel="shortcut icon" href="/src/img/favicon-welt.png" type="image/x-icon" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SH5HLH12B1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-SH5HLH12B1');
+    </script>
+
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #1a2332;
+            --text-primary: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --accent-purple: #8b5cf6;
+            --border: #334155;
+            --shadow: rgba(0, 0, 0, 0.4);
+
+            /* Parteifarben */
+            --fvp: #a855f7;
+            /* Lila */
+            --dlk: #ef4444;
+            /* Rot */
+            --dvp: #3b82f6;
+            /* Blau */
+            --fdd: #ec4899;
+            /* Pink */
+            --dku: #f59e0b;
+            /* Orange */
+            --ard: #10b981;
+            /* Grün */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary), #0a0e1a);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.7;
+        }
+
+        /* Navigation */
+        nav {
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .nav-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .nav-logo {
+            height: 34px;
+            transition: transform 0.2s;
+        }
+
+        .nav-logo:hover {
+            transform: scale(1.05);
+        }
+
+        .nav-link {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.75rem 1.25rem;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            font-size: 0.95rem;
+        }
+
+        .nav-link:hover {
+            background: rgba(139, 92, 246, 0.1);
+            color: var(--accent-purple);
+        }
+
+        .nav-link.wahlomat {
+            background: var(--accent-purple);
+            color: white;
+            font-weight: 600;
+        }
+
+        .nav-link.wahlomat:hover {
+            background: #7c3aed;
+        }
+
+        /* Main Content */
+        main {
+            flex: 1;
+            padding: 2.5rem 1.5rem;
+            max-width: 1300px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .page-title h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .page-meta {
+            text-align: center;
+            color: var(--text-secondary);
+            font-style: italic;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        /* MINIMALISTISCHE SUCHLEISTE */
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+        }
+
+        .search-icon {
+            color: var(--text-secondary);
+            margin-right: 0.75rem;
+            width: 20px;
+            height: 20px;
+        }
+
+        .search-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .search-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        /* Filter Chips – schlicht */
+        .filter-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .chip {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            padding: 0.4rem 0.9rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid var(--border);
+        }
+
+        .chip.active {
+            background: var(--accent-purple);
+            color: white;
+            border-color: var(--accent-purple);
+        }
+
+        .chip:hover:not(.active) {
+            background: rgba(139, 92, 246, 0.15);
+        }
+
+        /* Politiker Cards */
+        .politiker-container {
+            display: grid;
+            gap: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+        }
+
+        .politiker-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            box-shadow: 0 6px 20px var(--shadow);
+            transition: transform 0.3s ease;
+            animation: fadeInUp 0.6s ease-out forwards;
+            opacity: 0;
+            display: none;
+        }
+
+        .politiker-card.visible {
+            display: block;
+        }
+
+        .politiker-card:hover {
+            transform: translateY(-6px);
+        }
+
+        .card-header {
+            padding: 1.4rem;
+            color: white;
+            font-weight: 700;
+            font-size: 1.3rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .card-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: white;
+            border-radius: 2px;
+        }
+
+        /* Parteifarben */
+        .party-fvp .card-header {
+            background: #a855f7;
+        }
+
+        .party-dlk .card-header {
+            background: #ef4444;
+        }
+
+        .party-dvp .card-header {
+            background: #3b82f6;
+        }
+
+        .party-fdd .card-header {
+            background: #ec4899;
+        }
+
+        .party-dku .card-header {
+            background: #0c69d3;
+        }
+
+        .party-ard .card-header {
+            background: #0e1cdb;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.6rem;
+            font-size: 0.95rem;
+        }
+
+        .info-label {
+            color: var(--text-secondary);
+            font-style: italic;
+            min-width: 130px;
+        }
+
+        .info-value {
+            color: var(--text-primary);
+            font-weight: 500;
+            text-align: right;
+            flex: 1;
+        }
+
+        .card-footer {
+            background: var(--bg-secondary);
+            padding: 0.9rem 1.5rem;
+            text-align: right;
+            font-style: italic;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .ranking {
+            color: var(--accent-purple);
+            font-weight: 600;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(12px);
+            padding: 1.5rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border);
+            margin-top: 3rem;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .politiker-container {
+                grid-template-columns: 1fr;
+            }
+
+            .info-row {
+                flex-direction: column;
+                text-align: left;
+            }
+
+            .info-value {
+                text-align: left;
+                margin-top: 0.25rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .page-title h1 {
+                font-size: 2.3rem;
+            }
+
+            .search-container {
+                max-width: 100%;
+            }
+
+            .card-header {
+                font-size: 1.2rem;
+                padding: 1.2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="/index.html">
+                <img src="/src/img/Screenshot_2025-11-04_111207-removebg-preview.png" alt="Die Welt Logo"
+                    class="nav-logo">
+            </a>
+            <a href="/content/artikel.html" class="nav-link">Artikel</a>
+            <a href="/content/umfragen.html" class="nav-link">Umfragen</a>
+            <a href="/content/parteien.html" class="nav-link">Parteien</a>
+            <a href="/content/politiker.html" class="nav-link">Politiker</a>
+            <a href="/content/bundestag.html" class="nav-link">Bundestag</a>
+            <a href="/content/bundesregierung.html" class="nav-link">Bundesregierung</a>
+            <a href="/content/gesetze.html" class="nav-link">BGBl</a>
+            <a href="/content/gesetze-im-internet.html" class="nav-link">Gesetze im Internet</a>
+            <a href="/content/wahlomat.html" class="nav-link wahlomat">Wahl-O-Mat</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <div class="page-title">
+            <h1>Politiker</h1>
+        </div>
+        <div class="page-meta">
+            <strong>Stand: 03. November 2025</strong>
+        </div>
+
+        <!-- MINIMALISTISCHE SUCHLEISTE -->
+        <div class="search-container">
+            <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input type="text" class="search-input" placeholder="Name, Partei oder Amt suchen..." id="search-input">
+        </div>
+
+        <!-- Filter Chips -->
+        <div class="filter-chips">
+            <div class="chip active" data-filter="all">Alle</div>
+            <div class="chip" data-filter="fvp">FVP</div>
+            <div class="chip" data-filter="dlk">DLK</div>
+            <div class="chip" data-filter="dvp">DVP</div>
+            <div class="chip" data-filter="fdd">FDD</div>
+            <div class="chip" data-filter="dku">DKU</div>
+            <div class="chip" data-filter="ard">ARD</div>
+        </div>
+
+        <!-- Politiker -->
+        <div class="politiker-container" id="politiker-container"></div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>
+            © 2025–2030 Ben S. Alle Rechte vorbehalten.<br>
+            Diese Internetseite ist Teil einer <strong>Discord-Politiksimulation</strong> und dient lediglich zu
+            <em>Bildungszwecken</em>.
+        </p>
+    </footer>
+
+    <script>
+        // Alle Politiker
+        const politicians = [
+            { name: "Adenauer, Tim", party: "dku", current: "/", former: "Mitglied des Bundestages", ranking: "XX" },
+            { name: "Armstrong, Noah Tomson", party: "fdd", current: "Mitglied des Bundestages", former: "/", ranking: "XX" },
+            { name: "Bas, Bernd", party: "fdd", current: "Mitglied des Bundestages", former: "/", ranking: "XX" },
+            { name: "Baumann, Dr. Ben", party: "fvp", current: "Bundesminister der Finanzen; Mitglied des Bundestages", former: "/", ranking: "XX" },
+            { name: "Bonus, Gaius Iulius", party: "dvp", current: "Bundestagspräsident; Bundesminister für Gesundheit, Arbeit und Soziales; Mitglied des Bundestages", former: "/", ranking: "XX" },
+            { name: "Cassens, Henk", party: "dlk", current: "Mitglied des Bundestages", former: "/", ranking: "XX" },
+            { name: "Eisenberg, Dr. Levi", party: "fdd", current: "/", former: "Mitglied des Bundestages", ranking: "XX" },
+            { name: "Elik, Orkun", party: "fvp", current: "geschäftsführender Bundesminister für Digitales und Verkehr; Bundesminister der Justiz", former: "Mitglied des Bundestages", ranking: "XX" },
+            { name: "Fechner, Markus", party: "fdd", current: "Mitglied des Bundestages", former: "/", ranking: "XX" },
+            { name: "Frohnmaier, Dr. Jannik", party: "dvp", current: "Mitglied des Bundestages", former: "/", ranking: "XX" },
+            { name: "Habeck, Jonas", party: "fvp", current: "", former: "Mitglied des Bundestages", ranking: "XX" },
+            { name: "Hartmann, Ernst", party: "dlk", current: "Mitglied des Bundestages", former: "/", ranking: "XX" },
+            { name: "Klöckner, Julia", party: "fvp", current: "Bundesminister des Innern; Mitglied des Bundestages", former: "/", ranking: "XX" },
+            { name: "Krall, Martin", party: "fvp", current: "Bundesminister für Wirtschaft und Verwaltung", former: "Mitglied des Bundestages", ranking: "XX" },
+            { name: "Krüger, Jonas", party: "dlk", current: "Mitglied des Bundestages", former: "/", ranking: "XX" },
+            { name: "van der Lindenburg, Paul", party: "fvp", current: "Bundespräsident", former: "/", ranking: "XX" },
+            { name: "Lindner, Dr. Anil", party: "fvp", current: "Bundesminister des Auswärtigen; Bundestagsvizepräsident; Mitglied des Bundestages", former: "/", ranking: "XX" },
+            { name: "Maas, Aaron", party: "fdd", current: "Mitglied des Bundestages", former: "/", ranking: "XX" },
+            { name: "Niederberger, Martin", party: "dku", current: "/", former: "Mitglied des Bundestages", ranking: "XX" },
+            { name: "Nurcool, -", party: "ard", current: "/", former: "Mitglied des Bundestages", ranking: "XX" },
+            { name: "Richter, Prof. Dr. Ben", party: "dvp", current: "Bundesminister der Verteidigung; Mitglied des Bundestages", former: "/", ranking: "XX" },
+            { name: "Schmidt, Dr. Julian", party: "fvp", current: "Bundeskanzler; Mitglied des Bundestages", former: "/", ranking: "XX" },
+            { name: "Soze, Dr. Noah", party: "dlk", current: "Mitglied des Bundestages", former: "/", ranking: "XX" },
+            { name: "Spahn, Markus", party: "dvp", current: "Mitglied des Bundestages", former: "/", ranking: "XX" },
+            { name: "Spatz, Bernhard", party: "dku", current: "/", former: "Mitglied des Bundestages; Bundesminister für Digitales und Verkehr", ranking: "XX" },
+            { name: "Spatz, Sandie", party: "dku", current: "Bundesminister für Familie und Bildung", former: "Mitglied des Bundestages", ranking: "XX" }
+        ];
+
+        const container = document.getElementById('politiker-container');
+        container.innerHTML = '';
+
+        politicians.forEach((p, i) => {
+            const card = document.createElement('div');
+            card.className = `politiker-card party-${p.party} visible`;
+            card.dataset.party = p.party;
+            card.dataset.name = p.name;
+            card.dataset.current = p.current;
+            card.dataset.former = p.former;
+            card.style.animationDelay = `${i * 0.05}s`;
+
+            card.innerHTML = `
+        <div class="card-header">${p.name}</div>
+        <div class="card-body">
+          <div class="info-row"><span class="info-label">Partei:</span><span class="info-value">${p.party.toUpperCase()}</span></div>
+          <div class="info-row"><span class="info-label">Aktuelle Ämter:</span><span class="info-value">${p.current || '/'}</span></div>
+          <div class="info-row"><span class="info-label">Ehemalige Ämter:</span><span class="info-value">${p.former || '/'}</span></div>
+        </div>
+        <div class="card-footer"><i>Politiker-Ranking:</i> <span class="ranking">${p.ranking}</span></div>
+      `;
+
+            container.appendChild(card);
+        });
+
+        // Suche & Filter
+        const searchInput = document.getElementById('search-input');
+        const chips = document.querySelectorAll('.chip');
+        const cards = document.querySelectorAll('.politiker-card');
+        let activeFilter = 'all';
+
+        function filterCards() {
+            const query = searchInput.value.toLowerCase().trim();
+            cards.forEach(card => {
+                const name = card.dataset.name.toLowerCase();
+                const current = (card.dataset.current || '').toLowerCase();
+                const former = (card.dataset.former || '').toLowerCase();
+                const party = card.dataset.party;
+
+                const matchesSearch = !query || name.includes(query) || current.includes(query) || former.includes(query);
+                const matchesFilter = activeFilter === 'all' || party === activeFilter;
+
+                card.classList.toggle('visible', matchesSearch && matchesFilter);
+            });
+        }
+
+        searchInput.addEventListener('input', filterCards);
+
+        chips.forEach(chip => {
+            chip.addEventListener('click', () => {
+                chips.forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                activeFilter = chip.dataset.filter;
+                filterCards();
+            });
+        });
+
+        // Initial anzeigen
+        filterCards();
+    </script>
+
+</body>
+
+</html>

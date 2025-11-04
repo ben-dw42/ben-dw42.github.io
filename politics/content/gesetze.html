@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bundesgesetzblatt - Die Welt</title>
+    <link rel="shortcut icon" href="/src/img/favicon-welt.png" type="image/x-icon" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SH5HLH12B1"></script>
+    <script>window.dataLayer = window.dataLayer || []; function gtag() { dataLayer.push(arguments); } gtag('js', new Date()); gtag('config', 'G-SH5HLH12B1');</script>
+
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #1a2332;
+            --text-primary: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --accent-purple: #8b5cf6;
+            --border: #334155;
+            --shadow: rgba(0, 0, 0, 0.4);
+            --fvp: #a855f7;
+            --dlk: #ef4444;
+            --dvp: #3b82f6;
+            --regierung: #64748b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary), #0a0e1a);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.7;
+        }
+
+        nav {
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .nav-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .nav-logo {
+            height: 34px;
+            transition: transform .2s;
+        }
+
+        .nav-logo:hover {
+            transform: scale(1.05);
+        }
+
+        .nav-link {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            padding: .75rem 1.25rem;
+            border-radius: 8px;
+            transition: all .2s;
+            font-size: .95rem;
+        }
+
+        .nav-link:hover {
+            background: rgba(139, 92, 246, .1);
+            color: var(--accent-purple);
+        }
+
+        .nav-link.wahlomat {
+            background: var(--accent-purple);
+            color: white;
+            font-weight: 600;
+        }
+
+        .nav-link.wahlomat:hover {
+            background: #7c3aed;
+        }
+
+        main {
+            flex: 1;
+            padding: 2.5rem 1.5rem;
+            max-width: 1300px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-title h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8rem;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--accent-purple), #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            font-style: italic;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: .5rem 1rem;
+        }
+
+        .search-icon {
+            color: var(--text-secondary);
+            margin-right: .75rem;
+            width: 20px;
+            height: 20px;
+        }
+
+        .search-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .search-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .verkündungen {
+            list-style: none;
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .verkündung {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+            box-shadow: 0 6px 20px var(--shadow);
+            transition: all .3s;
+            animation: fadeInUp .6s ease-out forwards;
+            opacity: 0;
+        }
+
+        .verkündung.visible {
+            display: block;
+        }
+
+        .verkündung:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 28px var(--shadow);
+        }
+
+        .v-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: .75rem;
+        }
+
+        .v-datum {
+            font-weight: 600;
+            color: var(--accent-purple);
+        }
+
+        .v-titel {
+            font-weight: 700;
+            font-size: 1.15rem;
+            margin-bottom: .5rem;
+        }
+
+        .v-link {
+            margin-top: .75rem;
+        }
+
+        .v-link a {
+            color: var(--accent-purple);
+            text-decoration: underline;
+        }
+
+        .v-link a:hover {
+            color: #c084fc;
+        }
+
+        .pdf-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+            margin-top: .75rem;
+            padding: .5rem 1rem;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: .9rem;
+            text-decoration: none;
+            transition: all .2s;
+        }
+
+        .pdf-btn:hover {
+            background: rgba(139, 92, 246, .2);
+            border-color: var(--accent-purple);
+        }
+
+        footer {
+            background: rgba(30, 41, 59, .95);
+            backdrop-filter: blur(12px);
+            padding: 1.5rem;
+            text-align: center;
+            font-size: .85rem;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border);
+            margin-top: 3rem;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media(max-width:768px) {
+            .page-title h1 {
+                font-size: 2.3rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <div class="nav-container">
+            <a href="/index.html"><img src="/src/img/logo.png" alt="Logo" class="nav-logo"></a>
+            <a href="/content/artikel.html" class="nav-link">Artikel</a>
+            <a href="/content/umfragen.html" class="nav-link">Umfragen</a>
+            <a href="/content/parteien.html" class="nav-link">Parteien</a>
+            <a href="/content/politiker.html" class="nav-link">Politiker</a>
+            <a href="/content/bundestag.html" class="nav-link">Bundestag</a>
+            <a href="/content/bundesregierung.html" class="nav-link">Bundesregierung</a>
+            <a href="/content/gesetze.html" class="nav-link">BGBl</a>
+            <a href="/content/gesetze-im-internet.html" class="nav-link">Gesetze im Internet</a>
+            <a href="/content/wahlomat.html" class="nav-link wahlomat">Wahl-O-Mat</a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="page-title">
+            <h1>Bundesgesetzblatt</h1>
+        </div>
+        <div class="page-subtitle"><strong>Alle verkündeten Gesetze & Änderungen – chronologisch</strong></div>
+
+        <div class="search-container">
+            <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input type="text" class="search-input" placeholder="Verkündung suchen..." id="search">
+        </div>
+
+        <ul class="verkündungen" id="verkündungen"></ul>
+    </main>
+
+    <footer>
+        <p>© 2025–2030 Ben S. Alle Rechte vorbehalten.<br>
+            Diese Internetseite ist Teil einer <strong>Discord-Politiksimulation</strong> und dient lediglich zu
+            <em>Bildungszwecken</em>.</p>
+    </footer>
+
+    <script>
+        const verkündungen = [
+            { datum: "01.10.2025", titel: "Gesetz zur Reform des Deutschen Steuersystems [Steuerreformgesetz]", link: "https://discord.com/...", pdf: "/src/pdf/steuerreform_v1.pdf" },
+            { datum: "15.11.2025", titel: "Änderung des Steuerreformgesetzes (§12 Abs. 3)", link: "https://discord.com/...", pdf: "/src/pdf/steuerreform_v1.1.pdf" },
+            { datum: "20.10.2025", titel: "Klimaschutzgesetz 2025 (Erstverkündung)", link: "https://discord.com/...", pdf: null }
+        ];
+
+        const container = document.getElementById('verkündungen');
+        function render() {
+            container.innerHTML = '';
+            const q = document.getElementById('search').value.toLowerCase();
+            verkündungen
+                .filter(v => !q || v.titel.toLowerCase().includes(q) || v.datum.includes(q))
+                .forEach((v, i) => {
+                    const li = document.createElement('li');
+                    li.className = 'verkündung visible';
+                    li.style.animationDelay = `${i * 0.1}s`;
+                    li.innerHTML = `
+            <div class="v-header">
+              <span class="v-datum">${v.datum}</span>
+            </div>
+            <div class="v-titel">${v.titel}</div>
+            <div class="v-link"><a href="${v.link}" target="_blank">Verkündigungsnachricht</a></div>
+            ${v.pdf ? `<a href="${v.pdf}" class="pdf-btn" target="_blank">PDF anzeigen</a>` : ''}
+          `;
+                    container.appendChild(li);
+                });
+        }
+        document.getElementById('search').addEventListener('input', render);
+        render();
+    </script>
+</body>
+
+</html>

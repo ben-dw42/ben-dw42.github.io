@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Umfragen - Die Welt</title>
+    <link rel="shortcut icon" href="/src/img/favicon-welt.png" type="image/x-icon" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SH5HLH12B1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-SH5HLH12B1');
+    </script>
+
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #1a2332;
+            --text-primary: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --accent-purple: #8b5cf6;
+            --border: #334155;
+            --shadow: rgba(0, 0, 0, 0.4);
+
+            /* Parteifarben */
+            --fvp: #a855f7;
+            --dlk: #ef4444;
+            --dvp: #3b82f6;
+            --fdd: #ec4899;
+            --dku: #f59e0b;
+            --ard: #10b981;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary), #0a0e1a);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.7;
+        }
+
+        /* Navigation */
+        nav {
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .nav-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .nav-logo {
+            height: 34px;
+            transition: transform 0.2s;
+        }
+
+        .nav-logo:hover {
+            transform: scale(1.05);
+        }
+
+        .nav-link {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.75rem 1.25rem;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            font-size: 0.95rem;
+        }
+
+        .nav-link:hover {
+            background: rgba(139, 92, 246, 0.1);
+            color: var(--accent-purple);
+        }
+
+        .nav-link.wahlomat {
+            background: var(--accent-purple);
+            color: white;
+            font-weight: 600;
+        }
+
+        .nav-link.wahlomat:hover {
+            background: #7c3aed;
+        }
+
+        /* Main Content */
+        main {
+            flex: 1;
+            padding: 2.5rem 1.5rem;
+            max-width: 1300px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-title h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .page-meta {
+            text-align: center;
+            color: var(--text-secondary);
+            font-style: italic;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        /* Flourish Chart */
+        .chart-container {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto 3rem;
+            padding: 1.5rem;
+            background: var(--bg-card);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            box-shadow: 0 8px 24px var(--shadow);
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .chart-container iframe {
+            width: 100%;
+            height: 500px;
+            border: none;
+            border-radius: 16px;
+        }
+
+        /* Suchleiste */
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+        }
+
+        .search-icon {
+            color: var(--text-secondary);
+            margin-right: 0.75rem;
+            width: 20px;
+            height: 20px;
+        }
+
+        .search-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .search-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        /* Umfragen Liste */
+        .umfragen-container {
+            display: grid;
+            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .umfrage-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+            box-shadow: 0 6px 20px var(--shadow);
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.6s ease-out forwards;
+            opacity: 0;
+            display: none;
+        }
+
+        .umfrage-card.visible {
+            display: block;
+        }
+
+        .umfrage-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 28px var(--shadow);
+        }
+
+        .umfrage-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+        }
+
+        .umfrage-date {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .umfrage-results {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .result-bar {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .result-label {
+            min-width: 180px;
+            color: var(--text-secondary);
+        }
+
+        .result-value {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .bar-container {
+            flex: 1;
+            height: 8px;
+            background: var(--bg-secondary);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            background: var(--accent-purple);
+            border-radius: 4px;
+            transition: width 0.6s ease;
+        }
+
+        .umfrage-btn {
+            margin-top: 1rem;
+            padding: 0.6rem 1.2rem;
+            background: var(--accent-purple);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .umfrage-btn:hover {
+            background: #7c3aed;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 500px;
+            border: 1px solid var(--border);
+            box-shadow: 0 12px 40px var(--shadow);
+            animation: modalPop 0.3s ease-out;
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: var(--text-primary);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.25rem;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+            color: var(--text-primary);
+            line-height: 1.8;
+        }
+
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--border);
+            text-align: right;
+        }
+
+        .modal-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .modal-btn:hover {
+            background: #dc2626;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(12px);
+            padding: 1.5rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border);
+            margin-top: 3rem;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes modalPop {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-title h1 {
+                font-size: 2.3rem;
+            }
+
+            .chart-container iframe {
+                height: 400px;
+            }
+
+            .umfragen-container {
+                grid-template-columns: 1fr;
+            }
+
+            .result-label {
+                min-width: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="/index.html">
+                <img src="/src/img/Screenshot_2025-11-04_111207-removebg-preview.png" alt="Die Welt Logo"
+                    class="nav-logo">
+            </a>
+            <a href="/content/artikel.html" class="nav-link">Artikel</a>
+            <a href="/content/umfragen.html" class="nav-link">Umfragen</a>
+            <a href="/content/parteien.html" class="nav-link">Parteien</a>
+            <a href="/content/politiker.html" class="nav-link">Politiker</a>
+            <a href="/content/bundestag.html" class="nav-link">Bundestag</a>
+            <a href="/content/bundesregierung.html" class="nav-link">Bundesregierung</a>
+            <a href="/content/gesetze.html" class="nav-link">BGBl</a>
+            <a href="/content/gesetze-im-internet.html" class="nav-link">Gesetze im Internet</a>
+            <a href="/content/wahlomat.html" class="nav-link wahlomat">Wahl-O-Mat</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <div class="page-title">
+            <h1>Umfragen</h1>
+        </div>
+        <div class="page-meta">
+            <strong>Stand: 03. November 2025</strong>
+        </div>
+
+        <!-- Flourish Chart -->
+        <div class="chart-container">
+            <div class="flourish-embed flourish-chart" data-src="visualisation/25439962">
+                <script src="https://public.flourish.studio/resources/embed.js"></script>
+            </div>
+        </div>
+
+        <!-- Suchleiste -->
+        <div class="search-container">
+            <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input type="text" class="search-input" placeholder="Umfrage suchen..." id="search-input">
+        </div>
+
+        <!-- Umfragen -->
+        <div class="umfragen-container" id="umfragen-container">
+            <!-- Zufriedenheit -->
+            <div class="umfrage-card visible" data-title="Zufriedenheit" data-date="28.09.2025">
+                <div class="umfrage-title">Wie zufrieden sind Sie mit der aktuellen Arbeit der Bundesregierung?</div>
+                <div class="umfrage-date">vom 28.09.2025</div>
+                <div class="umfrage-results">
+                    <div class="result-bar">
+                        <span class="result-label">(Sehr) zufrieden</span>
+                        <span class="result-value">75%</span>
+                        <div class="bar-container">
+                            <div class="bar-fill" style="width: 75%;"></div>
+                        </div>
+                    </div>
+                    <div class="result-bar">
+                        <span class="result-label">Sehr unzufrieden</span>
+                        <span class="result-value">25%</span>
+                        <div class="bar-container">
+                            <div class="bar-fill" style="width: 25%;"></div>
+                        </div>
+                    </div>
+                </div>
+                <button class="umfrage-btn" onclick="openModal('zufriedenheit')">Details</button>
+            </div>
+
+            <!-- Klimaneutralität -->
+            <div class="umfrage-card visible" data-title="Klimaneutralität" data-date="22.06.2025">
+                <div class="umfrage-title">Sollte Deutschland klimaneutral werden?</div>
+                <div class="umfrage-date">vom 22.06.2025</div>
+                <div class="umfrage-results">
+                    <div class="result-bar">
+                        <span class="result-label">Ja, schnellstmöglich</span>
+                        <span class="result-value">37%</span>
+                        <div class="bar-container">
+                            <div class="bar-fill" style="width: 37%;"></div>
+                        </div>
+                    </div>
+                    <div class="result-bar">
+                        <span class="result-label">Ja, aber Wirtschaftlichkeit geht vor</span>
+                        <span class="result-value">50%</span>
+                        <div class="bar-container">
+                            <div class="bar-fill" style="width: 50%;"></div>
+                        </div>
+                    </div>
+                    <div class="result-bar">
+                        <span class="result-label">Nein</span>
+                        <span class="result-value">13%</span>
+                        <div class="bar-container">
+                            <div class="bar-fill" style="width: 13%;"></div>
+                        </div>
+                    </div>
+                </div>
+                <button class="umfrage-btn" onclick="openModal('klimaneutralität')">Details</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modals -->
+    <div class="modal" id="modal-zufriedenheit">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Wie zufrieden sind Sie mit der aktuellen Arbeit der Bundesregierung?
+                    (28.09.2025)</div>
+                <button class="modal-close" onclick="closeModal('zufriedenheit')">x</button>
+            </div>
+            <div class="modal-body">
+                (Sehr) zufrieden: 75%<br>
+                Sehr unzufrieden: 25%
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn" onclick="closeModal('zufriedenheit')">Schließen</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="modal-klimaneutralität">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Sollte Deutschland klimaneutral werden? (22.06.2025)</div>
+                <button class="modal-close" onclick="closeModal('klimaneutralität')">x</button>
+            </div>
+            <div class="modal-body">
+                Ja, schnellstmöglich: 37%<br>
+                Ja, aber Wirtschaftlichkeit geht vor: 50%<br>
+                Nein: 13%
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn" onclick="closeModal('klimaneutralität')">Schließen</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>
+            © 2025–2030 Ben S. Alle Rechte vorbehalten.<br>
+            Diese Internetseite ist Teil einer <strong>Discord-Politiksimulation</strong> und dient lediglich zu
+            <em>Bildungszwecken</em>.
+        </p>
+    </footer>
+
+    <script>
+        // Suche
+        const searchInput = document.getElementById('search-input');
+        const cards = document.querySelectorAll('.umfrage-card');
+
+        searchInput.addEventListener('input', () => {
+            const query = searchInput.value.toLowerCase().trim();
+            cards.forEach(card => {
+                const title = card.dataset.title.toLowerCase();
+                const date = card.dataset.date;
+                card.classList.toggle('visible', title.includes(query) || date.includes(query));
+            });
+        });
+
+        // Modal Funktionen
+        function openModal(id) {
+            document.getElementById(`modal-${id}`).classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(id) {
+            document.getElementById(`modal-${id}`).classList.remove('show');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close on outside click
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) closeModal(modal.id.replace('modal-', ''));
+            });
+        });
+
+        // Animation Delays
+        document.querySelectorAll('.umfrage-card').forEach((card, i) => {
+            card.style.animationDelay = `${i * 0.15}s`;
+        });
+    </script>
+
+</body>
+
+</html>

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Startseite - Die Welt</title>
+    <title>Artikel - Die Welt</title>
     <link rel="shortcut icon" href="/src/img/favicon-welt.png" type="image/x-icon" />
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap"
@@ -31,7 +31,9 @@
             --accent-purple: #8b5cf6;
             --border: #334155;
             --shadow: rgba(0, 0, 0, 0.4);
-            --logo-shadow: 0 0 30px rgba(59, 130, 246, 0.4);
+            --badge-success: #10b981;
+            --badge-warning: #f59e0b;
+            --badge-info: #0ea5e9;
         }
 
         * {
@@ -68,8 +70,19 @@
             padding: 0 1.5rem;
             display: flex;
             justify-content: center;
+            align-items: center;
             flex-wrap: wrap;
             gap: 1rem;
+        }
+
+        .nav-logo {
+            height: 32px;
+            filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.3));
+            transition: transform 0.3s;
+        }
+
+        .nav-logo:hover {
+            transform: scale(1.1);
         }
 
         .nav-link {
@@ -80,7 +93,6 @@
             border-radius: 12px;
             transition: all 0.3s ease;
             font-size: 0.95rem;
-            position: relative;
         }
 
         .nav-link:hover {
@@ -104,71 +116,128 @@
         /* Main Content */
         main {
             flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            padding: 2rem 1.5rem;
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .page-title {
             text-align: center;
-            padding: 3rem 1.5rem;
-            animation: fadeIn 1s ease-out;
+            margin-bottom: 2.5rem;
+            animation: fadeIn 0.8s ease-out;
         }
 
-        .logo-container {
-            margin-bottom: 2rem;
-            animation: float 6s ease-in-out infinite;
-        }
-
-        .logo-container img {
-            height: 180px;
-            filter: drop-shadow(0 0 20px var(--logo-shadow));
-            transition: transform 0.4s ease;
-        }
-
-        .logo-container img:hover {
-            transform: scale(1.05);
-        }
-
-        h1 {
+        .page-title h1 {
             font-family: 'Playfair Display', serif;
-            font-size: 3.2rem;
+            font-size: 2.8rem;
             font-weight: 700;
             background: linear-gradient(to right, var(--accent-blue), var(--accent-purple));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
         }
 
-        .subtitle {
-            font-size: 1.3rem;
+        .page-title p {
             color: var(--text-secondary);
-            max-width: 700px;
-            margin: 0 auto 2rem;
+            font-size: 1.1rem;
         }
 
-        .discord-btn {
-            display: inline-flex;
+        /* Article Cards */
+        .articles-container {
+            display: grid;
+            gap: 1.5rem;
+            grid-template-columns: 1fr;
+        }
+
+        .article-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 1.75rem;
+            border: 1px solid var(--border);
+            box-shadow: 0 6px 16px var(--shadow);
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.6s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .article-card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .article-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .article-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 28px var(--shadow);
+            border-color: var(--accent-blue);
+        }
+
+        .article-title {
+            display: flex;
             align-items: center;
             gap: 0.75rem;
-            background: linear-gradient(to right, var(--accent-blue), var(--accent-purple));
+            margin-bottom: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .article-title h4 {
+            font-size: 1.35rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .badge {
+            padding: 0.35rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-talkshow {
+            background: var(--badge-success);
             color: white;
-            padding: 1rem 2rem;
-            border-radius: 16px;
+        }
+
+        .badge-innenpolitik {
+            background: var(--badge-info);
+            color: white;
+        }
+
+        .article-text {
+            color: var(--text-secondary);
+            margin-bottom: 1.25rem;
+            font-size: 0.95rem;
+        }
+
+        .article-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .article-link {
+            color: var(--accent-blue);
             text-decoration: none;
             font-weight: 600;
-            font-size: 1.1rem;
-            box-shadow: 0 6px 16px rgba(59, 130, 246, 0.3);
-            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            transition: color 0.2s;
         }
 
-        .discord-btn:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 24px rgba(59, 130, 246, 0.4);
+        .article-link:hover {
+            color: var(--accent-blue-dark);
         }
 
-        .discord-btn svg {
-            width: 24px;
-            height: 24px;
+        .article-link::after {
+            content: "→";
+            font-weight: bold;
         }
 
         /* Footer */
@@ -180,6 +249,7 @@
             font-size: 0.85rem;
             color: var(--text-secondary);
             border-top: 1px solid var(--border);
+            margin-top: 3rem;
         }
 
         footer a {
@@ -191,61 +261,43 @@
         @keyframes fadeIn {
             from {
                 opacity: 0;
-                transform: translateY(20px);
             }
 
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
 
-        @keyframes float {
-
-            0%,
-            100% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(-15px);
-            }
-        }
-
         /* Responsive */
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2.5rem;
-            }
-
-            .subtitle {
-                font-size: 1.1rem;
-            }
-
-            .logo-container img {
-                height: 140px;
-            }
-
-            .nav-container {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .nav-link {
-                width: 100%;
-                max-width: 300px;
-                text-align: center;
+        @media (min-width: 768px) {
+            .articles-container {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
 
-        @media (max-width: 480px) {
-            h1 {
-                font-size: 2rem;
+        @media (max-width: 640px) {
+            .page-title h1 {
+                font-size: 2.2rem;
             }
 
-            .discord-btn {
-                padding: 0.9rem 1.5rem;
-                font-size: 1rem;
+            .article-card {
+                padding: 1.5rem;
+            }
+
+            .article-title {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .badge {
+                font-size: 0.75rem;
             }
         }
     </style>
@@ -256,6 +308,10 @@
     <!-- Navigation -->
     <nav>
         <div class="nav-container">
+            <a href="/index.html">
+                <img src="/src/img/Screenshot_2025-11-04_111207-removebg-preview.png" alt="Die Welt Logo"
+                    class="nav-logo">
+            </a>
             <a href="/content/artikel.html" class="nav-link">Artikel</a>
             <a href="/content/umfragen.html" class="nav-link">Umfragen</a>
             <a href="/content/parteien.html" class="nav-link">Parteien</a>
@@ -270,18 +326,44 @@
 
     <!-- Main Content -->
     <main>
-        <div class="logo-container">
-            <img src="/src/img/Screenshot_2025-11-04_111207-removebg-preview.png" alt="Die Welt Logo">
+        <div class="page-title">
+            <h1>Artikel</h1>
+            <p>Die neuesten Berichte, Analysen und Talk-Show-Zusammenfassungen aus der Politiksimulation.</p>
         </div>
-        <p class="subtitle">
-            Wir sind ein unabhängiges Medienhaus in einer realistischen Discord-Politiksimulation.
-            Informiere dich, diskutiere und gestalte die Politik von morgen!
-        </p>
-        <a href="https://discord.gg/pk7hByHF4M" target="_blank" class="discord-btn">
-            <img src="/src/img/discord-logo-01-discord-logo-11562849833clsolz2mbc-removebg-preview-removebg-preview.png"
-                alt="" style="width: 50px;">
-            Jetzt auf Discord beitreten
-        </a>
+
+        <div class="articles-container">
+
+            <!-- Artikel 002 -->
+            <div class="article-card">
+                <div class="article-title">
+                    <h4>Die Welt - Artikel 002</h4>
+                    <span class="badge badge-talkshow">Talk-Show</span>
+                </div>
+                <p class="article-text">
+                    In diesem Artikel können Sie eine Zusammenfassung des Kanzler-Triells zwischen der DLK, FVP und DVP
+                    nachlesen.
+                </p>
+                <a href="/content/artikel/Zusammenfassung des ersten Kanzler-Triells von Die Welt.pdf"
+                    class="article-link" target="_blank">
+                    Jetzt kostenlos lesen
+                </a>
+            </div>
+
+            <!-- Artikel 001 -->
+            <div class="article-card">
+                <div class="article-title">
+                    <h4>Die Welt - Artikel 001</h4>
+                    <span class="badge badge-innenpolitik">Innenpolitik</span>
+                </div>
+                <p class="article-text">
+                    Im ersten Artikel der Welt geht es um das Verbot der Organisation "Antifaschistische Aktion".
+                    Warum diese Organisation eine Gefahr für unsere Republik ist, können Sie hier nachlesen.
+                </p>
+                <a href="/content/artikel/DieWelt_01.pdf" class="article-link" target="_blank">
+                    Jetzt kostenlos lesen
+                </a>
+            </div>
+        </div>
     </main>
 
     <!-- Footer -->

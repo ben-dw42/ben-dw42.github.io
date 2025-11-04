@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bundestag - Die Welt</title>
+    <link rel="shortcut icon" href="/src/img/favicon-welt.png" type="image/x-icon" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SH5HLH12B1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-SH5HLH12B1');
+    </script>
+
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #1a2332;
+            --text-primary: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --accent-blue: #3b82f6;
+            --accent-blue-dark: #2563eb;
+            --accent-purple: #8b5cf6;
+            --border: #334155;
+            --shadow: rgba(0, 0, 0, 0.4);
+            --highlight: #10b981;
+            --danger: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary), #0a0e1a);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.7;
+        }
+
+        /* Navigation */
+        nav {
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .nav-logo {
+            height: 34px;
+            filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.3));
+            transition: transform 0.3s;
+        }
+
+        .nav-logo:hover {
+            transform: scale(1.1);
+        }
+
+        .nav-link {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.75rem 1.25rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .nav-link:hover {
+            background: rgba(59, 130, 246, 0.15);
+            color: var(--accent-blue);
+            transform: translateY(-2px);
+        }
+
+        .nav-link.wahlomat {
+            background: linear-gradient(to right, var(--accent-blue), var(--accent-purple));
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .nav-link.wahlomat:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        /* Main Content */
+        main {
+            flex: 1;
+            padding: 2.5rem 1.5rem;
+            max-width: 1100px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .page-title h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8rem;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--accent-blue), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-title p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        /* Info Buttons */
+        .info-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            justify-content: center;
+            margin-bottom: 2.5rem;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: var(--bg-card);
+            padding: 1rem 1.5rem;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            box-shadow: 0 6px 16px var(--shadow);
+            transition: all 0.3s ease;
+            min-width: 280px;
+        }
+
+        .info-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 24px var(--shadow);
+        }
+
+        .info-label {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+        }
+
+        .info-btn {
+            background: linear-gradient(to right, var(--accent-blue), var(--accent-purple));
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .info-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .info-link {
+            color: var(--accent-blue);
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-link:hover {
+            color: var(--accent-blue-dark);
+        }
+
+        .info-link::after {
+            content: "→";
+            font-weight: bold;
+        }
+
+        /* Leadership */
+        .leadership {
+            margin-bottom: 2.5rem;
+            animation: fadeInUp 0.7s ease-out;
+        }
+
+        .leadership h4 {
+            font-size: 1.4rem;
+            color: var(--accent-blue);
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+
+        .leadership p {
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Fraktionen */
+        .fraktionen {
+            display: grid;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .fraktion {
+            background: var(--bg-card);
+            padding: 1.75rem;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            box-shadow: 0 6px 16px var(--shadow);
+            animation: fadeInUp 0.8s ease-out forwards;
+            opacity: 0;
+        }
+
+        .fraktion:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .fraktion:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .fraktion:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .fraktion:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .fraktion:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 28px var(--shadow);
+        }
+
+        .fraktion-title {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--accent-purple);
+            margin-bottom: 1rem;
+            font-style: italic;
+        }
+
+        .abgeordnete-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .abgeordneter {
+            background: var(--bg-secondary);
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            font-weight: 500;
+            color: var(--text-primary);
+            transition: all 0.2s;
+            border-left: 3px solid var(--accent-blue);
+        }
+
+        .abgeordneter:hover {
+            background: rgba(59, 130, 246, 0.2);
+            transform: translateX(4px);
+        }
+
+        /* Flourish Embed */
+        .flourish-container {
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            box-shadow: 0 8px 24px var(--shadow);
+            margin: 3rem auto;
+            max-width: 900px;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            margin: auto;
+            padding: 0;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 800px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            animation: slideIn 0.4s ease-out;
+        }
+
+        .modal-header {
+            background: linear-gradient(to right, var(--accent-blue), var(--accent-purple));
+            color: white;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h4 {
+            margin: 0;
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .modal-body {
+            padding: 2rem;
+            color: var(--text-primary);
+        }
+
+        .modal-footer {
+            padding: 1.5rem;
+            text-align: right;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+        }
+
+        .modal-btn {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .modal-btn:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(12px);
+            padding: 1.5rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border);
+            margin-top: 3rem;
+        }
+
+        footer a {
+            color: var(--accent-blue);
+            text-decoration: underline;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-title h1 {
+                font-size: 2.3rem;
+            }
+
+            .info-bar {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .info-item {
+                width: 100%;
+                max-width: 400px;
+            }
+
+            .abgeordnete-list {
+                grid-template-columns: 1fr;
+            }
+
+            .flourish-container {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="/index.html">
+                <img src="/src/img/Screenshot_2025-11-04_111207-removebg-preview.png" alt="Die Welt Logo"
+                    class="nav-logo">
+            </a>
+            <a href="/content/artikel.html" class="nav-link">Artikel</a>
+            <a href="/content/umfragen.html" class="nav-link">Umfragen</a>
+            <a href="/content/parteien.html" class="nav-link">Parteien</a>
+            <a href="/content/politiker.html" class="nav-link">Politiker</a>
+            <a href="/content/bundestag.html" class="nav-link">Bundestag</a>
+            <a href="/content/bundesregierung.html" class="nav-link">Bundesregierung</a>
+            <a href="/content/gesetze.html" class="nav-link">BGBl</a>
+            <a href="/content/gesetze-im-internet.html" class="nav-link">Gesetze im Internet</a>
+            <a href="/content/wahlomat.html" class="nav-link wahlomat">Wahl-O-Mat</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <div class="page-title">
+            <h1>Der Deutsche Bundestag</h1>
+            <p>4. Legislaturperiode – Aktuelle Zusammensetzung und Fraktionen</p>
+        </div>
+
+        <!-- Info Bar -->
+        <div class="info-bar">
+            <div class="info-item">
+                <span class="info-label">Wahlergebnisse</span>
+                <button class="info-btn" id="open-modal">Anzeigen</button>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Drucksachenarchiv</span>
+                <a href="https://trello.com/b/oDuXx7SC/drs-archiv-iv-legislatur" target="_blank" class="info-link">Zum
+                    Archiv</a>
+            </div>
+        </div>
+
+        <!-- Leadership -->
+        <div class="leadership">
+            <h4>Bundestagspräsident</h4>
+            <p><strong>Gaius Iulius Bonus</strong></p>
+            <h4 style="margin-top: 1.5rem;">Bundestagsvizepräsident</h4>
+            <p><strong>Dr. Anil Lindner</strong></p>
+        </div>
+
+        <hr
+            style="border: 0; height: 2px; background: linear-gradient(to right, transparent, var(--accent-blue), transparent); margin: 2.5rem 0;">
+
+        <!-- Fraktionen -->
+        <h2
+            style="text-align: center; margin-bottom: 2rem; font-family: 'Playfair Display', serif; color: var(--accent-purple);">
+            Abgeordnete des 4. Deutschen Bundestages
+        </h2>
+
+        <div class="fraktionen">
+            <div class="fraktion">
+                <div class="fraktion-title">Fraktion der DLK</div>
+                <div class="abgeordnete-list">
+                    <div class="abgeordneter">Dr. Noah Soze</div>
+                    <div class="abgeordneter">Jonas Krüger</div>
+                    <div class="abgeordneter">Ernst Hartmann</div>
+                    <div class="abgeordneter">Henk Cassens</div>
+                </div>
+            </div>
+
+            <div class="fraktion">
+                <div class="fraktion-title">Fraktion der FDD</div>
+                <div class="abgeordnete-list">
+                    <div class="abgeordneter">Aaron Maas</div>
+                    <div class="abgeordneter">Markus Fechner</div>
+                    <div class="abgeordneter">Bernd Bas</div>
+                    <div class="abgeordneter">Noah Tomson Armstrong</div>
+                </div>
+            </div>
+
+            <div class="fraktion">
+                <div class="fraktion-title">Fraktion der DVP</div>
+                <div class="abgeordnete-list">
+                    <div class="abgeordneter">Gaius Iulius Bonus</div>
+                    <div class="abgeordneter">Dr. Ben Richter</div>
+                    <div class="abgeordneter">Dr. Jannik Frohnmaier</div>
+                </div>
+            </div>
+
+            <div class="fraktion">
+                <div class="fraktion-title">Fraktion der FVP</div>
+                <div class="abgeordnete-list">
+                    <div class="abgeordneter">Dr. Julian Schmidt</div>
+                    <div class="abgeordneter">Dr. Anil Lindner</div>
+                    <div class="abgeordneter">Dr. Ben Baumann</div>
+                    <div class="abgeordneter">Julia Klöckner</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flourish Parliament Chart -->
+        <div class="flourish-container">
+            <div class="flourish-embed flourish-parliament" data-src="visualisation/25438291">
+                <script src="https://public.flourish.studio/resources/embed.js"></script>
+                <noscript>
+                    <img src="https://public.flourish.studio/visualisation/25438291/thumbnail" width="100%"
+                        alt="Sitzverteilung" />
+                </noscript>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal -->
+    <div class="modal" id="wahlergebnisse-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Wahlergebnisse</h4>
+                <button class="modal-close" id="close-modal">×</button>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom: 1.5rem; color: var(--text-secondary);">
+                    Klicken Sie auf ein Datum, um das entsprechende Wahlergebnis anzuzeigen.
+                </p>
+                <div class="flourish-embed flourish-chart" data-src="visualisation/25439870">
+                    <script src="https://public.flourish.studio/resources/embed.js"></script>
+                    <noscript>
+                        <img src="https://public.flourish.studio/visualisation/25439870/thumbnail" width="100%"
+                            alt="Wahlergebnisse" />
+                    </noscript>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn" id="close-modal-footer">Schließen</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>
+            © 2025–2030 Ben S. Alle Rechte vorbehalten.<br>
+            Diese Internetseite ist Teil einer <strong>Discord-Politiksimulation</strong> und dient lediglich zu
+            <em>Bildungszwecken</em>.
+        </p>
+    </footer>
+
+    <script>
+        // Modal Logic
+        const modal = document.getElementById('wahlergebnisse-modal');
+        const openBtn = document.getElementById('open-modal');
+        const closeBtn = document.getElementById('close-modal');
+        const closeFooter = document.getElementById('close-modal-footer');
+
+        openBtn.addEventListener('click', () => {
+            modal.classList.add('active');
+        });
+
+        const closeModal = () => {
+            modal.classList.remove('active');
+        };
+
+        closeBtn.addEventListener('click', closeModal);
+        closeFooter.addEventListener('click', closeModal);
+
+        // Close on outside click
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+
+        // ESC key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.classList.contains('active')) {
+                closeModal();
+            }
+        });
+    </script>
+
+</body>
+
+</html>

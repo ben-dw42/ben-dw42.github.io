@@ -1,0 +1,25 @@
+{
+  "title": "Allgemeine Parteiprogramm-Vergleiche",
+  "description": "Dieser Scan dient allen, die noch nicht ganz wissen, in welche Partei sie gerne gehen würden und natürlich auch an alle anderen die einfach gerne die Positionen der anderen Parteien sehen wollen. Viel Erfolg!",
+  "theses": [
+    {
+      "text": "Die Schuldenbremse im Grundgesetz muss abgeschafft werden",
+      "answers": {
+        "ard": { "value": -1, "justification": "Nein - Die Schuldenbremse ist wichtig, damit nicht zu viele Schulden gemacht werden." },
+        "dku": { "value": -1, "justification": "Nein" }, 
+        "fvp": { "value": -1, "justification": "Nein - Sie stellt sicher, dass finanzielle Lasten nicht unseren Kindern und Enkeln aufgebürdet werden." }, 
+        "nl": { "value": -1, "justification": "Nein - Wir müssen ein Stück weit auf unseren Haushalt achten. " }, 
+        "svd": { "value": 1, "justification": "Ja - Die SVD lehnt die Schuldenbremse als neoliberales Instrument ab, da sie die staatliche Handlungsfähigkeit einschränkt. Eine starke nationale Wirtschaft soll laut SVD durch staatliche Steuerung gefördert werden. " }, 
+        "gp": { "value": 1, "justification": "Ja - Die Schuldenbremse verhindert wichtige öffentliche Investitionen, etwa in Klimaschutz oder Bildung." } 
+      }
+    }
+  ],
+  "parties": [
+    { "id": "ard", "name": "ARD" },
+    { "id": "dku", "name": "DKU" },
+    { "id": "fvp", "name": "FVP" },
+    { "id": "nl", "name": "Neue Liberale" }, 
+    { "id": "svd", "name": "SVD" }, 
+    { "id": "gp", "name": "GenP" } 
+  ]
+}

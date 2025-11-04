@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PoliScan</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0f172a;
+      --bg-secondary: #1e293b;
+      --bg-card: #1a2332;
+      --text-primary: #e2e8f0;
+      --text-secondary: #94a3b8;
+      --accent-blue: #3b82f6;
+      --accent-blue-dark: #2563eb;
+      --accent-purple: #8b5cf6;
+      --border: #334155;
+      --shadow: rgba(0, 0, 0, 0.3);
+      --success: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, var(--bg-primary), #0a0e1a);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: 1.5rem;
+      line-height: 1.6;
+    }
+
+    a {
+      color: var(--accent-blue);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    a:hover {
+      color: var(--accent-blue-dark);
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+      animation: fadeIn 0.8s ease-out;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      font-weight: 700;
+      background: linear-gradient(to right, var(--accent-blue), var(--accent-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+    }
+
+    p.description {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+      color: var(--accent-blue);
+      text-decoration: none;
+    }
+
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    nav button {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      padding: 0.75rem 1.25rem;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      min-width: 140px;
+    }
+
+    nav button:hover {
+      background: var(--accent-blue);
+      border-color: var(--accent-blue);
+      transform: translateY(-2px);
+    }
+
+    nav button.active {
+      background: linear-gradient(to right, var(--accent-blue), var(--accent-purple));
+      border-color: transparent;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    section {
+      display: none;
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    section.active {
+      display: block;
+    }
+
+    .thesis {
+      background: var(--bg-card);
+      padding: 1.5rem;
+      margin-bottom: 1.25rem;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 12px var(--shadow);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .thesis:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px var(--shadow);
+    }
+
+    .thesis p {
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--text-primary);
+      font-size: 1.1rem;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .options label {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      background: var(--bg-secondary);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 0.95rem;
+    }
+
+    .options label:hover {
+      background: rgba(59, 130, 246, 0.15);
+      border-color: var(--accent-blue);
+    }
+
+    .options input[type="radio"] {
+      accent-color: var(--accent-blue);
+      transform: scale(1.1);
+    }
+
+    .options input[type="radio"]:checked + span {
+      font-weight: 600;
+      color: var(--accent-blue);
+    }
+
+    .options label span {
+      flex: 1;
+    }
+
+    .button-area {
+      text-align: center;
+      margin: 2rem 0;
+    }
+
+    .button-area button {
+      background: linear-gradient(to right, var(--accent-blue), var(--accent-purple));
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 1.1rem;
+      box-shadow: 0 6px 16px rgba(59, 130, 246, 0.3);
+      transition: all 0.3s ease;
+      min-width: 220px;
+    }
+
+    .button-area button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 24px rgba(59, 130, 246, 0.4);
+    }
+
+    /* Bar Chart */
+    .bar-chart {
+      margin-top: 2rem;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .bar-wrapper {
+      margin-bottom: 1.5rem;
+    }
+
+    .party-label {
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      font-size: 1.05rem;
+    }
+
+    .bar-background {
+      width: 100%;
+      height: 36px;
+      background-color: var(--bg-secondary);
+      border-radius: 10px;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .bar {
+      height: 100%;
+      background: linear-gradient(to right, var(--accent-blue), var(--accent-purple));
+      border-radius: 10px;
+      transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+
+    .percent-label {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: white;
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+      z-index: 2;
+    }
+
+    /* Tables */
+    .justifications-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1.5rem;
+      background: var(--bg-card);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px var(--shadow);
+    }
+
+    .justifications-table th {
+      background: linear-gradient(to right, var(--accent-blue), var(--accent-purple));
+      color: white;
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    .justifications-table td {
+      padding: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .justifications-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .justifications-table td:first-child {
+      font-weight: 600;
+      color: var(--accent-blue);
+      width: 180px;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    footer a {
+      color: var(--accent-blue);
+      text-decoration: underline;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      h1 { font-size: 2.2rem; }
+      nav { flex-direction: column; align-items: center; }
+      nav button { width: 100%; max-width: 300px; }
+      .options label { font-size: 0.9rem; }
+      .button-area button { width: 100%; max-width: 300px; }
+    }
+  </style>
+</head>
+<body>
+  <a href="/content/wahlomat.html" class="back-link">zurück</a>
+
+  <header>
+    <h1 id="title"></h1>
+    <p class="description" id="description"></p>
+  </header>
+
+  <nav>
+    <button onclick="switchTab('theses')" class="active">Thesen</button>
+    <button onclick="switchTab('results')">Auswertung</button>
+    <button onclick="switchTab('justifications')">Begründungen</button>
+  </nav>
+
+  <section id="theses" class="active"></section>
+
+  <div class="button-area">
+    <button onclick="switchTab('results'); calculateResults()">Auswertung anzeigen</button>
+  </div>
+
+  <section id="results"></section>
+  <section id="justifications"></section>
+
+  <footer>
+    &copy; 2025 Ben S. Alle Rechte vorbehalten.<br />
+    PoliScan gehört zum
+    <a href="https://politiksimulator.miraheze.org/wiki/Hauptseite" target="_blank">Politik Simulator auf Discord</a> – Mach gerne mit!
+  </footer>
+
+  <script>
+    let data;
+    let userAnswers = [];
+
+    fetch('data.json')
+      .then(res => res.json())
+      .then(json => {
+        data = json;
+        document.getElementById('title').innerText = data.title;
+        document.getElementById('description').innerText = data.description;
+        renderTheses();
+        renderJustifications();
+        renderResultsOverview();
+      });
+
+    function switchTab(tabId) {
+      document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('active'));
+      document.querySelector(`nav button[onclick="switchTab('${tabId}')"]`).classList.add('active');
+      document.querySelectorAll('section').forEach(sec => sec.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+    }
+
+    function renderTheses() {
+      const container = document.getElementById('theses');
+      container.innerHTML = '';
+      data.theses.forEach((thesis, index) => {
+        const div = document.createElement('div');
+        div.className = 'thesis';
+        div.innerHTML = `
+          <p><strong>These ${index + 1}:</strong> ${thesis.text}</p>
+          <div class="options">
+            <label><input type="radio" name="thesis-${index}" value="1"><span>Stimme zu</span></label>
+            <label><input type="radio" name="thesis-${index}" value="0"><span>Neutral</span></label>
+            <label><input type="radio" name="thesis-${index}" value="-1"><span>Stimme nicht zu</span></label>
+            <label><input type="radio" name="thesis-${index}" value=""><span>Keine Antwort</span></label>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function calculateResults() {
+      const numTheses = data.theses.length;
+      const results = {};
+      data.parties.forEach(p => results[p.id] = { match: 0, total: 0, name: p.name });
+
+      data.theses.forEach((thesis, index) => {
+        const selected = document.querySelector(`input[name="thesis-${index}"]:checked`);
+        if (!selected || selected.value === '') return;
+        const userVal = parseInt(selected.value);
+
+        for (const [partyId, answer] of Object.entries(thesis.answers)) {
+          if (answer.value === userVal) results[partyId].match++;
+          results[partyId].total++;
+        }
+      });
+
+      const resultsArray = Object.keys(results)
+        .map(partyId => {
+          const r = results[partyId];
+          const percent = r.total ? Math.round((r.match / r.total) * 100) : 0;
+          return { partyId, name: r.name, percent };
+        })
+        .sort((a, b) => b.percent - a.percent);
+
+      const container = document.getElementById('results');
+      container.innerHTML = '<h2 style="text-align:center; margin-bottom: 1.5rem;">Deine Übereinstimmung</h2>';
+
+      const barChartContainer = document.createElement('div');
+      barChartContainer.className = 'bar-chart';
+
+      resultsArray.forEach((result, i) => {
+        setTimeout(() => {
+          const barWrapper = document.createElement('div');
+          barWrapper.className = 'bar-wrapper';
+
+          const partyLabel = document.createElement('div');
+          partyLabel.className = 'party-label';
+          partyLabel.textContent = `${i + 1}. ${result.name}`;
+
+          const barBackground = document.createElement('div');
+          barBackground.className = 'bar-background';
+
+          const bar = document.createElement('div');
+          bar.className = 'bar';
+          bar.style.width = '0%';
+          setTimeout(() => bar.style.width = `${result.percent}%`, 100);
+
+          const percentLabel = document.createElement('div');
+          percentLabel.className = 'percent-label';
+          percentLabel.textContent = `${result.percent}%`;
+
+          barBackground.appendChild(bar);
+          barBackground.appendChild(percentLabel);
+          barWrapper.appendChild(partyLabel);
+          barWrapper.appendChild(barBackground);
+          barChartContainer.appendChild(barWrapper);
+        }, i * 150);
+      });
+
+      container.appendChild(barChartContainer);
+    }
+
+    function renderJustifications() {
+      const container = document.getElementById('justifications');
+      container.innerHTML = '';
+      data.theses.forEach((thesis, i) => {
+        const table = document.createElement('table');
+        table.className = 'justifications-table';
+        table.innerHTML = `
+          <tr><th colspan="2">These ${i + 1}: ${thesis.text}</th></tr>
+          ${data.parties.map(p => {
+            const a = thesis.answers[p.id];
+            return `<tr><td>${p.name}</td><td>${a.justification}</td></tr>`;
+          }).join('')}
+        `;
+        container.appendChild(table);
+      });
+    }
+
+    function renderResultsOverview() {
+      const container = document.getElementById('results');
+      container.innerHTML = `
+        <h2 style="text-align:center; margin-bottom: 1rem;">Bereit für deine Auswertung?</h2>
+        <p style="text-align:center; color:var(--text-secondary); max-width:600px; margin:0 auto 1.5rem;">
+          Beantworte die Thesen oben und klicke auf „Auswertung anzeigen“, um zu sehen, 
+          mit welchen Parteien du am meisten übereinstimmst.
+        </p>
+      `;
+    }
+  </script>
+</body>
+</html>

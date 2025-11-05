@@ -29,6 +29,9 @@
             --accent-purple: #8b5cf6;
             --border: #334155;
             --shadow: rgba(0, 0, 0, 0.4);
+            --accent-blue: #3b82f6;
+            --accent-blue-dark: #2563eb;
+            --accent-purple: #8b5cf6;
 
             /* Parteifarben */
             --fvp: #a855f7;
@@ -91,7 +94,7 @@
             color: var(--text-primary);
             text-decoration: none;
             font-weight: 500;
-            padding: 0.75rem 1.25rem;
+            padding: 0.75rem 1rem;
             border-radius: 8px;
             transition: all 0.2s ease;
             font-size: 0.95rem;
@@ -103,13 +106,15 @@
         }
 
         .nav-link.wahlomat {
-            background: var(--accent-purple);
+            background: linear-gradient(to right, var(--accent-blue), var(--accent-purple));
             color: white;
             font-weight: 600;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
         }
 
         .nav-link.wahlomat:hover {
-            background: #7c3aed;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
         }
 
         /* Main Content */
@@ -426,6 +431,371 @@
             }
         }
     </style>
+    <style>
+        .political-spectrum-parties {
+            background: linear-gradient(135deg, #1a2332, #0f172a);
+            border: 1px solid #334155;
+            border-radius: 20px;
+            padding: 1.75rem 2rem;
+            max-width: 800px;
+            width: 100%;
+            margin: 2rem auto;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            font-family: 'Inter', sans-serif;
+            color: #e2e8f0;
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .political-spectrum-parties:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.5);
+        }
+
+        .spectrum-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .spectrum-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: linear-gradient(to right, #8b5cf6, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 0;
+        }
+
+        .spectrum-date {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            font-style: italic;
+        }
+
+        .spectrum-bar-container {
+            position: relative;
+            margin: 1.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .axis-label {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #94a3b8;
+            min-width: 60px;
+            flex-shrink: 0;
+        }
+
+        .axis-label.left {
+            text-align: left;
+        }
+
+        .axis-label.right {
+            text-align: right;
+        }
+
+        .spectrum-bar {
+            flex: 1;
+            height: 18px;
+            border-radius: 9px;
+            overflow: hidden;
+            position: relative;
+            min-width: 200px;
+        }
+
+        /* Gesamter Balken farbig */
+        .spectrum-fill-full {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to right, #ff0000 0%, #f59e0b 50%, #44efa8 100%);
+            border-radius: 9px;
+            z-index: 1;
+        }
+
+        /* Gesellschaftsmarker */
+        .spectrum-marker {
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 8px;
+            height: 32px;
+            background: white;
+            border: 3px solid #1e293b;
+            border-radius: 4px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5);
+            z-index: 3;
+        }
+
+        .spectrum-marker::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 7px solid transparent;
+            border-right: 7px solid transparent;
+            border-top: 7px solid white;
+        }
+
+        /* PARTEI-MARKER */
+        .party-marker {
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+            cursor: pointer;
+        }
+
+        .party-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 3px solid #1e293b;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+            position: relative;
+        }
+
+        .party-icon::before {
+            content: attr(data-name);
+            position: absolute;
+            top: -28px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1e293b;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s ease;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .party-marker:hover .party-icon::before {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .party-icon.fvp {
+            background: #a855f7;
+        }
+
+        .party-icon.dlk {
+            background: #ef4444;
+        }
+
+        .party-icon.dvp {
+            background: #3b82f6;
+        }
+
+        .party-icon.fdd {
+            background: #ec4899;
+        }
+
+        .spectrum-value {
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+
+        .spectrum-value strong {
+            font-size: 2.2rem;
+            background: linear-gradient(to right, #8b5cf6, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .trend {
+            display: block;
+            font-size: 0.95rem;
+            font-weight: 500;
+            margin-top: 0.25rem;
+        }
+
+        .trend.up {
+            color: #10b981;
+        }
+
+        .trend.down {
+            color: #ef4444;
+        }
+
+        /* LEGENDE */
+        .spectrum-legend {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            font-size: 0.85rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .legend-color.fvp {
+            background: #a855f7;
+        }
+
+        .legend-color.dlk {
+            background: #ff0000;
+        }
+
+        .legend-color.dvp {
+            background: #3b82f6;
+        }
+
+        .legend-color.fdd {
+            background: #ff47a3;
+        }
+
+        .spectrum-source {
+            font-size: 0.8rem;
+            color: #64748b;
+            text-align: center;
+            font-style: italic;
+            margin-top: 1rem;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* RESPONSIVE – HANDY */
+        @media (max-width: 576px) {
+            .political-spectrum-parties {
+                padding: 1.25rem 1rem;
+                margin: 1.5rem 1rem;
+                border-radius: 16px;
+            }
+
+            .spectrum-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.25rem;
+            }
+
+            .spectrum-title {
+                font-size: 1.1rem;
+            }
+
+            .spectrum-date {
+                font-size: 0.75rem;
+            }
+
+            .spectrum-bar-container {
+                flex-direction: column;
+                gap: 0.75rem;
+                align-items: stretch;
+            }
+
+            .axis-label {
+                min-width: auto;
+                font-size: 0.85rem;
+                text-align: center !important;
+            }
+
+            .spectrum-bar {
+                height: 16px;
+                min-width: 100%;
+            }
+
+            .party-icon {
+                width: 20px;
+                height: 20px;
+            }
+
+            .party-icon::before {
+                top: -24px;
+                font-size: 0.65rem;
+                padding: 3px 6px;
+            }
+
+            .spectrum-marker {
+                width: 7px;
+                height: 28px;
+            }
+
+            .spectrum-marker::after {
+                border-left: 6px solid transparent;
+                border-right: 6px solid transparent;
+                border-top: 6px solid white;
+            }
+
+            .spectrum-value {
+                font-size: 1.4rem;
+                margin-top: 0.75rem;
+            }
+
+            .spectrum-value strong {
+                font-size: 1.8rem;
+            }
+
+            .trend {
+                font-size: 0.85rem;
+            }
+
+            .spectrum-legend {
+                gap: 0.75rem;
+                font-size: 0.8rem;
+            }
+
+            .spectrum-source {
+                font-size: 0.7rem;
+                margin-top: 0.75rem;
+            }
+        }
+
+        @media (max-width: 350px) {
+            .spectrum-value strong {
+                font-size: 1.6rem;
+            }
+
+            .spectrum-title {
+                font-size: 1rem;
+            }
+
+            .party-icon::before {
+                display: none;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -444,7 +814,7 @@
             <a href="/content/bundestag.html" class="nav-link">Bundestag</a>
             <a href="/content/bundesregierung.html" class="nav-link">Bundesregierung</a>
             <a href="/content/gesetze.html" class="nav-link">BGBl</a>
-            <a href="/content/gesetze-im-internet.html" class="nav-link">Gesetze im Internet</a>
+            <a href="/content/gesetze-im-internet.html" class="nav-link" hidden>Gesetze im Internet</a>
             <a href="/content/wahlomat.html" class="nav-link wahlomat">Wahl-O-Mat</a>
         </div>
     </nav>
@@ -454,8 +824,46 @@
         <div class="page-title">
             <h1>Umfragen</h1>
         </div>
-        <div class="page-meta">
-            <strong>Stand: 03. November 2025</strong>
+
+        <!-- POLITICAL SPECTRUM – PARTEIEN AUF DER SKALA -->
+        <div class="political-spectrum-parties">
+            <div class="spectrum-header">
+                <h3 class="spectrum-title">Politische Ausrichtung der Gesellschaft</h3>
+                <span class="spectrum-date">Stand: 04. November 2025</span>
+            </div>
+
+            <div class="spectrum-bar-container">
+                <div class="axis-label left">Links</div>
+                <div class="spectrum-bar">
+                    <!-- Gesamter Balken farbig -->
+                    <div class="spectrum-fill-full"></div>
+
+                    <!-- PARTEIEN AUF DER SKALA -->
+                    <div class="party-marker" style="left: 87%;" data-name="FVP">
+                        <div class="party-icon fvp"></div>
+                    </div>
+                    <div class="party-marker" style="left: 12%;" data-name="DLK">
+                        <div class="party-icon dlk"></div>
+                    </div>
+                    <div class="party-marker" style="left: 82%;" data-name="DVP">
+                        <div class="party-icon dvp"></div>
+                    </div>
+                    <div class="party-marker" style="left: 45%;" data-name="FDD">
+                        <div class="party-icon fdd"></div>
+                    </div>
+
+                    <!-- Gesellschaftsmarker -->
+                    <div class="spectrum-marker" style="left: 60%;"></div>
+                </div>
+                <div class="axis-label right">Rechts</div>
+            </div>
+
+            <div class="spectrum-legend">
+                <div class="legend-item"><span class="legend-color dlk"></span> DLK</div>
+                <div class="legend-item"><span class="legend-color fdd"></span> FDD</div>
+                <div class="legend-item"><span class="legend-color dvp"></span> DVP</div>
+                <div class="legend-item"><span class="legend-color fvp"></span> FVP</div>
+            </div>
         </div>
 
         <!-- Flourish Chart -->
@@ -512,7 +920,7 @@
                         </div>
                     </div>
                     <div class="result-bar">
-                        <span class="result-label">Ja, aber Wirtschaftlichkeit geht vor</span>
+                        <span class="result-label">Ja, aber <br>Wirtschaftlichkeit <br>geht vor</span>
                         <span class="result-value">50%</span>
                         <div class="bar-container">
                             <div class="bar-fill" style="width: 50%;"></div>
